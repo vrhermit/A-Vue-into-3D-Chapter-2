@@ -1,7 +1,8 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, StandardMaterial, Color3, HemisphericLight } from "@babylonjs/core";
+import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock } from "@babylonjs/gui";
 
 import { brand } from "@/helpers/brand";
+
 const createScene = (canvas) => {
   // Create and customize the scene
   const engine = new Engine(canvas);
@@ -9,19 +10,16 @@ const createScene = (canvas) => {
   createSceneEnvironment(scene);
   createSceneCamera(canvas);
 
-  // Placeholder box - we will use the arc rotate camera to move around this object/position
-  const box = MeshBuilder.CreateBox("box", { size: 1 }, scene);
-  const material = new StandardMaterial("box-material", scene);
-  material.diffuseColor = new Color3.FromHexString(brand.pink);
-  box.material = material;
-  box.position = new Vector3(0, 2, 4);
   createSceneTitle();
+  createLogo();
+  createBlocks();
 
   // Add a ground plane to the scene. Used for WebXR teleportation
   const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 });
   const groundMat = new StandardMaterial("ground-material", scene);
   groundMat.alpha = 1;
   groundMat.diffuseColor = new Color3.FromHexString(brand.dark4);
+  groundMat.specularColor = new Color3(0.2, 0.2, 0.2);
   ground.material = groundMat;
 
   // WebXRDefaultExperience
@@ -50,11 +48,16 @@ const createSceneCamera = (canvas) => {
 
 const createSceneEnvironment = (scene) => {
   // Customize the scene lighting and background color
-  new HemisphericLight("light", Vector3.Up(), scene);
+  // new HemisphericLight("light", Vector3.Up(), scene);
+
+  const ambientLight1 = new HemisphericLight("light", new Vector3(5, 5, 5));
+  ambientLight1.intensity = 0.7;
+  const ambientLight2 = new HemisphericLight("light", new Vector3(-5, 5, -5));
+  ambientLight2.intensity = 0.7;
   scene.clearColor = Color3.FromHexString(brand.light1);
 };
 
-function createSceneTitle() {
+const createSceneTitle = () => {
   const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 1 });
   plane.position = new Vector3(0, 3, 6);
   plane.scaling = new Vector3(2, 2, 2);
@@ -69,28 +72,50 @@ function createSceneTitle() {
 
   const title = new TextBlock("title");
   title.text = "Extended Collection";
-  title.color = "black";
   title.fontSize = 96;
   title.height = "160px";
-  title.textHorizontalAlignment = 0;
-  title.textVerticalAlignment = 0;
-  title.paddingTop = 40;
-  title.paddingLeft = 40;
-  title.paddingRight = 40;
   panel.addControl(title);
 
   const subtitle = new TextBlock("title");
   subtitle.text = "Curating the Immersive Web";
-  subtitle.color = "black";
   subtitle.fontSize = 64;
   subtitle.height = "120px";
-  subtitle.textHorizontalAlignment = 0;
-  subtitle.textVerticalAlignment = 0;
-  subtitle.paddingTop = 40;
-  subtitle.paddingLeft = 40;
-  subtitle.paddingRight = 40;
   panel.addControl(subtitle);
-}
+};
 
-// export { createScene };
+const createLogo = () => {
+  // Placeholder logo - need to put something together in Blender
+
+  const group = new Mesh("logo-group");
+  group.position = new Vector3(-1.5, 3.5, 6);
+  group.rotation = new Vector3(0, 2, 0);
+  group.scaling = new Vector3(0.5, 0.5, 0.5);
+  makeBox("light2", group).position = new Vector3(0, 0, 0);
+  makeBox("pink", group).position = new Vector3(0.5, 0, 0);
+  makeBox("blue", group).position = new Vector3(0, 0.5, 0);
+  makeBox("green", group).position = new Vector3(0, 0, 0.5);
+};
+
+const createBlocks = () => {
+  // Just placing some blocks in the scene for fun
+
+  const group = new Mesh("block-group");
+  group.position = new Vector3(0, 0.5, 0);
+  makeBox("light2", group).position = new Vector3(-2, 0, 4);
+  makeBox("pink", group).position = new Vector3(2, 0, 4);
+  makeBox("blue", group).position = new Vector3(-2, 0, -2);
+  makeBox("green", group).position = new Vector3(2, 0, -2);
+};
+
+const makeBox = (colorName, parent) => {
+  const mat = new StandardMaterial(`${colorName}-material`);
+  mat.diffuseColor = new Color3.FromHexString(brand[colorName]);
+  mat.specularColor = new Color3(0.2, 0.2, 0.2);
+  const mesh = MeshBuilder.CreateBox(`${colorName}-box`, { size: 0.5 });
+  mesh.material = mat;
+  mesh.parent = parent;
+
+  return mesh;
+};
+
 export default createScene;
