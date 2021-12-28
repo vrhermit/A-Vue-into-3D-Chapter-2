@@ -1,4 +1,6 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, StandardMaterial, Color3, HemisphericLight } from "@babylonjs/core";
+import { AdvancedDynamicTexture, StackPanel, TextBlock } from "@babylonjs/gui";
+
 import { brand } from "@/helpers/brand";
 const createScene = (canvas) => {
   // Create and customize the scene
@@ -12,7 +14,8 @@ const createScene = (canvas) => {
   const material = new StandardMaterial("box-material", scene);
   material.diffuseColor = new Color3.FromHexString(brand.pink);
   box.material = material;
-  box.position = new Vector3(0, 2, -4);
+  box.position = new Vector3(0, 2, 4);
+  createSceneTitle();
 
   // Add a ground plane to the scene. Used for WebXR teleportation
   const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 });
@@ -41,7 +44,7 @@ const createSceneCamera = (canvas) => {
   camera.lowerRadiusLimit = 2;
   camera.upperRadiusLimit = 50;
   camera.setPosition(new Vector3(0, 1.5, 0));
-  camera.setTarget(new Vector3(0, 2, -4));
+  camera.setTarget(new Vector3(0, 2, 4));
   camera.attachControl(canvas, true);
 };
 
@@ -50,6 +53,44 @@ const createSceneEnvironment = (scene) => {
   new HemisphericLight("light", Vector3.Up(), scene);
   scene.clearColor = Color3.FromHexString(brand.light1);
 };
+
+function createSceneTitle() {
+  const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 1 });
+  plane.position = new Vector3(0, 3, 6);
+  plane.scaling = new Vector3(2, 2, 2);
+
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+
+  const panel = new StackPanel();
+  panel.verticalAlignment = 0;
+  panel.height = "400px";
+
+  advancedTexture.addControl(panel);
+
+  const title = new TextBlock("title");
+  title.text = "Extended Collection";
+  title.color = "black";
+  title.fontSize = 96;
+  title.height = "160px";
+  title.textHorizontalAlignment = 0;
+  title.textVerticalAlignment = 0;
+  title.paddingTop = 40;
+  title.paddingLeft = 40;
+  title.paddingRight = 40;
+  panel.addControl(title);
+
+  const subtitle = new TextBlock("title");
+  subtitle.text = "Curating the Immersive Web";
+  subtitle.color = "black";
+  subtitle.fontSize = 64;
+  subtitle.height = "120px";
+  subtitle.textHorizontalAlignment = 0;
+  subtitle.textVerticalAlignment = 0;
+  subtitle.paddingTop = 40;
+  subtitle.paddingLeft = 40;
+  subtitle.paddingRight = 40;
+  panel.addControl(subtitle);
+}
 
 // export { createScene };
 export default createScene;
