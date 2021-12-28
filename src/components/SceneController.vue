@@ -1,10 +1,10 @@
 <template>
-  <canvas ref="bjsCanvas" width="500" height="500" />
+  <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
 </template>
 
 <script>
 import { ref, onMounted } from "@vue/runtime-core";
-import { createScene } from "@/scenes/DataCards.js";
+import createScene  from "@/scenes/MainScene.js";
 
 export default {
   name: "BabylonScene",
