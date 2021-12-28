@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>A Vue into 3D</h1>
-    <h2>Starting point</h2>
+    <h2>Chapter 2.0 – Babylon JS</h2>
     <p>
       <b>About:</b> This template is part of a series of articles that I'm
       working on as I learn various ways to connect 3D JS frameworks to Vue JS.
@@ -10,33 +10,20 @@
     </p>
 
     <p>
-      This is not intended to be a "good" Vue app. The features below will be
-      replaced in a 3D scene.
+      Nothing to see here yet.
     </p>
-    <h3>Features</h3>
-    <ul>
-      <li>Load some data from an API</li>
-      <li>Page through sets of records</li>
-      <li>Store a list of favorites in localStorage</li>
-    </ul>
+
     <hr />
     <br />
     <SceneController />
 
-    <section v-if="errored">
+    <!-- <section v-if="errored">
       <p>Nope. Not gonna happen.</p>
     </section>
 
     <section v-else>
       <div v-if="loading">Loading...</div>
       <div v-else>
-        <!-- Print the JSON to reference the response structure -->
-        <!-- <pre
-          >{{ itemResponse.headers }}
-        </pre> -->
-        <!-- <pre
-          >{{ itemResponse.data }}
-        </pre> -->
         <div>
           <button @click="loadPrevious" :disabled="this.page <= 1">
             Previous
@@ -59,19 +46,19 @@
           :item="item"
         />
       </div>
-    </section>
+    </section> -->
   </div>
 </template>
 
 <script>
-import ItemCard2D from "./components/ItemCard2D";
+// import ItemCard2D from "./components/ItemCard2D";
 import LibraryService from "@/services/LibraryService.js";
 import SceneController from "./components/SceneController.vue";
 
 export default {
   name: "App",
   components: {
-    ItemCard2D,
+    // ItemCard2D,
     SceneController
 },
   data() {

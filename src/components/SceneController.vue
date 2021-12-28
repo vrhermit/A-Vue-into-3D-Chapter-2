@@ -11,9 +11,9 @@ export default {
   setup() {
     const bjsCanvas = ref(null);
 
-    onMounted(() => {
+    onMounted(async() => {
       if (bjsCanvas.value) {
-        createScene(bjsCanvas.value);
+       await createScene(bjsCanvas.value);
       }
     });
 
