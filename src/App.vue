@@ -21,6 +21,7 @@
     </ul>
     <hr />
     <br />
+    <SceneController />
 
     <section v-if="errored">
       <p>Nope. Not gonna happen.</p>
@@ -65,12 +66,14 @@
 <script>
 import ItemCard2D from "./components/ItemCard2D";
 import LibraryService from "@/services/LibraryService.js";
+import SceneController from "./components/SceneController.vue";
 
 export default {
   name: "App",
   components: {
     ItemCard2D,
-  },
+    SceneController
+},
   data() {
     return {
       itemResponse: null,
