@@ -1,5 +1,5 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button } from "@babylonjs/gui";
+import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
 const createScene = (canvas) => {
@@ -13,9 +13,41 @@ const createScene = (canvas) => {
   createBlocks();
   const ground = createGround(); // used for WebXR teleportation
 
+  var anchor = new TransformNode("");
+  anchor.position = new Vector3(0, 1, 2);
+
+  // Create the 3D UI manager
+  var manager = new GUI3DManager(scene);
+
+  var panel = new SpherePanel();
+  panel.margin = 0.05;
+
+  manager.addControl(panel);
+  panel.linkToTransformNode(anchor);
+  panel.position.z = -1.5;
+  panel.rows = 3;
+
+  // Let's add some buttons!
+  var addButton = function () {
+    var button = createCompactCard();
+    panel.addControl(button);
+
+    // button.text = "Button #" + panel.children.length;
+  };
+
+  panel.blockLayout = true;
+  for (var index = 0; index < 12; index++) {
+    addButton();
+  }
+  panel.blockLayout = false;
+
   // Placeholder card
   const sampleCard = createItemCard();
-  console.log(sampleCard);
+  sampleCard.position = new Vector3(-1, 1.4, 4);
+  // const compactCard = createCompactCard();
+  // compactCard.position = new Vector3(1, 1.4, 4);
+  // console.log(sampleCard);
+  // console.log(compactCard);
 
   // WebXRDefaultExperience
   const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -27,6 +59,57 @@ const createScene = (canvas) => {
   engine.runRenderLoop(() => {
     scene.render();
   });
+};
+
+const createCompactCard = () => {
+  const cardMat = new StandardMaterial("light2");
+  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
+  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
+  const card = MeshBuilder.CreateBox("detail-card", { height: 2.2, width: 2, depth: 0.2 });
+  card.material = cardMat;
+
+  const plane = MeshBuilder.CreatePlane("plane", { height: 2.2, width: 2 });
+  plane.position.z = -0.11;
+  plane.parent = card;
+
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 512, 2.4 * 512);
+
+  const panel = new StackPanel();
+  panel.verticalAlignment = 0;
+  advancedTexture.addControl(panel);
+
+  const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
+  image.height = "1024px";
+  image.width = "1024px";
+  image.paddingTop = 40;
+  image.paddingLeft = 40;
+  image.paddingRight = 40;
+  panel.addControl(image);
+
+  const title = new TextBlock("title");
+  title.text = "Title of a Library Item";
+  title.color = "white";
+  title.fontSize = 48;
+  title.height = "120px";
+  title.textHorizontalAlignment = 0;
+  title.textVerticalAlignment = 1;
+  title.paddingTop = 40;
+  title.paddingLeft = 40;
+  title.paddingRight = 40;
+  panel.addControl(title);
+
+  // Some hardcoded transform values – will be replaced
+  card.scaling = new Vector3(0.2, 0.2, 0.2);
+  // card.position = new Vector3(0, 1.4, 4);
+
+  // card.scaling = new Vector3(0.8, 0.8, 0.8);
+  // card.position = new Vector3(1, 1.8, 4);
+
+  const returnButton = new MeshButton3D(card, "pushButton");
+  // returnButton.scaling = new Vector3(0.8, 0.8, 0.8);
+  // returnButton.position = new Vector3(1, 1.8, 4);
+
+  return returnButton;
 };
 
 const createItemCard = () => {
@@ -95,11 +178,11 @@ const createItemCard = () => {
   panel.addControl(button1);
 
   // Some hardcoded transform values – will be replaced
-  // card.scaling = new Vector3(0.2, 0.2, 0.2);
+  card.scaling = new Vector3(0.2, 0.2, 0.2);
   // card.position = new Vector3(0, 1.4, 4);
 
-  card.scaling = new Vector3(0.8, 0.8, 0.8);
-  card.position = new Vector3(0, 1.8, 4);
+  // card.scaling = new Vector3(0.8, 0.8, 0.8);
+  // card.position = new Vector3(-1, 1.8, 4);
 
   return card;
 };
@@ -108,6 +191,7 @@ const createCamera = (canvas) => {
   // Add an ArcRotateCamera to the scene and attach it to the canvas
   // ArcRotateCamera is used to rotate the camera around the scene when not using WebXR
   const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0));
+  camera.wheelDeltaPercentage = 0.01;
   camera.upperBetaLimit = Math.PI / 1.5;
   camera.lowerRadiusLimit = 2;
   camera.upperRadiusLimit = 50;
