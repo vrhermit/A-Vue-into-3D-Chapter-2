@@ -106,37 +106,38 @@ const createItemCard = () => {
   const cardMat = new StandardMaterial("light2");
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
   cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 3.4, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox("detail-card", { height: 3.6, width: 2, depth: 0.2 });
   card.material = cardMat;
 
-  const plane = MeshBuilder.CreatePlane("plane", { height: 3.4, width: 2 });
+  const plane = MeshBuilder.CreatePlane("plane", { height: 3.6, width: 2 });
   plane.position.z = -0.11;
   plane.parent = card;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 512, 3.4 * 512);
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 3.6 * 1024);
 
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
   const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
-  image.height = "1024px";
-  image.width = "1024px";
-  image.paddingTop = 40;
-  image.paddingLeft = 40;
-  image.paddingRight = 40;
+  image.height = "2048px";
+  image.width = "2048px";
+  image.paddingTop = 80;
+  image.paddingLeft = 80;
+  image.paddingRight = 80;
   panel.addControl(image);
 
   const title = new TextBlock("title");
   title.text = "Title of a Library Item";
   title.color = "white";
-  title.fontSize = 48;
-  title.height = "120px";
+  title.fontSize = 144;
+  title.fontStyle = "bold";
+  title.height = "240px";
   title.textHorizontalAlignment = 0;
   title.textVerticalAlignment = 0;
-  title.paddingTop = 40;
-  title.paddingLeft = 40;
-  title.paddingRight = 40;
+  title.paddingTop = 80;
+  title.paddingLeft = 80;
+  title.paddingRight = 80;
   panel.addControl(title);
 
   const description = new TextBlock("description");
@@ -145,22 +146,22 @@ const createItemCard = () => {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   description.textWrapping = true;
   description.color = "white";
-  description.fontSize = 36;
-  description.height = "440px";
+  description.fontSize = 96;
+  description.height = "1100px";
   description.textHorizontalAlignment = 0;
   description.textVerticalAlignment = 0;
-  description.paddingTop = 20;
-  description.paddingLeft = 40;
-  description.paddingRight = 40;
+  description.paddingTop = 40;
+  description.paddingLeft = 80;
+  description.paddingRight = 80;
   panel.addControl(description);
 
   const button1 = Button.CreateSimpleButton("but1", "Toggle Favorite");
-  button1.height = "120px";
+  button1.height = "240px";
   button1.color = "white";
   button1.background = brand.pink;
-  button1.fontSize = 50;
-  button1.paddingLeft = 40;
-  button1.paddingRight = 40;
+  button1.fontSize = 96;
+  button1.paddingLeft = 80;
+  button1.paddingRight = 80;
   button1.onPointerUpObservable.add(function () {
     console.log("button1 clicked");
   });
