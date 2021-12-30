@@ -6,21 +6,16 @@ const createScene = (canvas) => {
   // Create and customize the scene
   const engine = new Engine(canvas);
   const scene = new Scene(engine);
-  createSceneEnvironment(scene);
-  createSceneCamera(canvas);
-  createSceneTitle();
+  createEnvironment(scene);
+  createCamera(canvas);
+  createTitle();
   createLogo();
   createBlocks();
+  const ground = createGround(); // used for WebXR teleportation
 
-  createItemCard();
-
-  // Add a ground plane to the scene. Used for WebXR teleportation
-  const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 });
-  const groundMat = new StandardMaterial("ground-material", scene);
-  groundMat.alpha = 1;
-  groundMat.diffuseColor = new Color3.FromHexString(brand.dark4);
-  groundMat.specularColor = new Color3(0.2, 0.2, 0.2);
-  ground.material = groundMat;
+  // Placeholder card
+  const sampleCard = createItemCard();
+  console.log(sampleCard);
 
   // WebXRDefaultExperience
   const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -35,33 +30,34 @@ const createScene = (canvas) => {
 };
 
 const createItemCard = () => {
-  const card = MeshBuilder.CreateBox("detail-card", { height: 3.2, width: 2, depth: 0.2 });
-  card.position = new Vector3(0, 2, 4);
+  const cardMat = new StandardMaterial("light2");
+  cardMat.diffuseColor = new Color3.FromHexString(brand.light2);
+  cardMat.specularColor = new Color3(0.1, 0.1, 0.1);
+  const card = MeshBuilder.CreateBox("detail-card", { height: 3.4, width: 2, depth: 0.2 });
 
-  const plane = MeshBuilder.CreatePlane("plane", { height: 3, width: 2 });
+  const plane = MeshBuilder.CreatePlane("plane", { height: 3.4, width: 2 });
   plane.position.z = -0.11;
-  plane.position.y = 0.1;
   plane.parent = card;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 512, 3.4 * 512);
 
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
-  // panel.height = "400px";
   advancedTexture.addControl(panel);
 
   const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
-  image.height = "600px";
+  image.height = "1024px";
+  image.width = "1024px";
   image.paddingTop = 40;
   image.paddingLeft = 40;
   image.paddingRight = 40;
   panel.addControl(image);
 
   const title = new TextBlock("title");
-  title.text = "Extended Collection";
+  title.text = "Title of a Library Item";
   title.color = "black";
   title.fontSize = 48;
-  title.height = "100px";
+  title.height = "120px";
   title.textHorizontalAlignment = 0;
   title.textVerticalAlignment = 0;
   title.paddingTop = 40;
@@ -75,8 +71,8 @@ const createItemCard = () => {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   description.textWrapping = true;
   description.color = "black";
-  description.fontSize = 24;
-  description.height = "660px";
+  description.fontSize = 36;
+  description.height = "440px";
   description.textHorizontalAlignment = 0;
   description.textVerticalAlignment = 0;
   description.paddingTop = 20;
@@ -85,26 +81,29 @@ const createItemCard = () => {
   panel.addControl(description);
 
   const button1 = Button.CreateSimpleButton("but1", "Toggle Favorite");
-  button1.width = 1;
-  button1.height = "100px";
+  button1.height = "120px";
   button1.color = "white";
   button1.background = brand.pink;
   button1.fontSize = 50;
-  button1.paddingBottom = 20;
   button1.paddingLeft = 40;
   button1.paddingRight = 40;
   button1.onPointerUpObservable.add(function () {
     console.log("button1 clicked");
   });
   button1.verticalAlignment = 1;
-  advancedTexture.addControl(button1);
+  panel.addControl(button1);
+
+  // Some hardcoded transform values – will be replaced
+  card.scaling = new Vector3(0.2, 0.2, 0.2);
+  card.position = new Vector3(0, 1.4, 4);
+  return card;
 };
 
-const createSceneCamera = (canvas) => {
+const createCamera = (canvas) => {
   // Add an ArcRotateCamera to the scene and attach it to the canvas
   // ArcRotateCamera is used to rotate the camera around the scene when not using WebXR
   const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0));
-  camera.upperBetaLimit = Math.PI / 2.2;
+  camera.upperBetaLimit = Math.PI / 1.5;
   camera.lowerRadiusLimit = 2;
   camera.upperRadiusLimit = 50;
   camera.setPosition(new Vector3(0, 1.5, 0));
@@ -112,18 +111,27 @@ const createSceneCamera = (canvas) => {
   camera.attachControl(canvas, true);
 };
 
-const createSceneEnvironment = (scene) => {
+const createEnvironment = (scene) => {
   // Customize the scene lighting and background color
-  // new HemisphericLight("light", Vector3.Up(), scene);
-
   const ambientLight1 = new HemisphericLight("light", new Vector3(5, 5, 5));
   ambientLight1.intensity = 0.7;
   const ambientLight2 = new HemisphericLight("light", new Vector3(-5, 5, -5));
   ambientLight2.intensity = 0.7;
-  scene.clearColor = Color3.FromHexString(brand.light1);
+  scene.clearColor = Color3.FromHexString(brand.dark4);
 };
 
-const createSceneTitle = () => {
+const createGround = () => {
+  // Add a ground plane to the scene. Used for WebXR teleportation
+  const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 });
+  const groundMat = new StandardMaterial("ground-material");
+  groundMat.alpha = 1;
+  groundMat.diffuseColor = new Color3.FromHexString(brand.dark4);
+  groundMat.specularColor = new Color3(0.2, 0.2, 0.2);
+  ground.material = groundMat;
+  return ground;
+};
+
+const createTitle = () => {
   const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 1 });
   plane.position = new Vector3(0, 3, 6);
   plane.scaling = new Vector3(2, 2, 2);
@@ -151,7 +159,6 @@ const createSceneTitle = () => {
 
 const createLogo = () => {
   // Placeholder logo - need to put something together in Blender
-
   const group = new Mesh("logo-group");
   group.position = new Vector3(-1.5, 3.5, 6);
   group.rotation = new Vector3(0, 2, 0);
@@ -164,7 +171,6 @@ const createLogo = () => {
 
 const createBlocks = () => {
   // Just placing some blocks in the scene for fun
-
   const group = new Mesh("block-group");
   group.position = new Vector3(0, 0.5, 0);
   makeBox("light2", group).position = new Vector3(-2, 0, 4);
@@ -174,13 +180,13 @@ const createBlocks = () => {
 };
 
 const makeBox = (colorName, parent) => {
+  // Create a colored box from using a string to get the color from the Brand object
   const mat = new StandardMaterial(`${colorName}-material`);
   mat.diffuseColor = new Color3.FromHexString(brand[colorName]);
-  mat.specularColor = new Color3(0.2, 0.2, 0.2);
+  mat.specularColor = new Color3(0.1, 0.1, 0.1);
   const mesh = MeshBuilder.CreateBox(`${colorName}-box`, { size: 0.5 });
   mesh.material = mat;
   mesh.parent = parent;
-
   return mesh;
 };
 
