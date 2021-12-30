@@ -2,7 +2,7 @@ import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMat
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
-const createScene = (canvas) => {
+const createScene = async (canvas) => {
   // Create and customize the scene
   const engine = new Engine(canvas);
   const scene = new Scene(engine);
@@ -43,12 +43,8 @@ const createScene = (canvas) => {
 
   // Placeholder card
   const sampleCard = createItemCard();
-  sampleCard.position = new Vector3(2.4, 1.8, 4.6);
+  sampleCard.position = new Vector3(2.1, 1.6, 4.6);
   sampleCard.rotation.y = Math.PI / 5;
-  // const compactCard = createCompactCard();
-  // compactCard.position = new Vector3(1, 1.4, 4);
-  // console.log(sampleCard);
-  // console.log(compactCard);
 
   // WebXRDefaultExperience
   const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -101,17 +97,8 @@ const createCompactCard = () => {
   title.paddingRight = 40;
   panel.addControl(title);
 
-  // Some hardcoded transform values – will be replaced
   card.scaling = new Vector3(0.3, 0.3, 0.3);
-  // card.position = new Vector3(0, 1.4, 4);
-
-  // card.scaling = new Vector3(0.8, 0.8, 0.8);
-  // card.position = new Vector3(1, 1.8, 4);
-
   const returnButton = new MeshButton3D(card, "pushButton");
-  // returnButton.scaling = new Vector3(0.8, 0.8, 0.8);
-  // returnButton.position = new Vector3(1, 1.8, 4);
-
   return returnButton;
 };
 
@@ -181,7 +168,7 @@ const createItemCard = () => {
   panel.addControl(button1);
 
   // Some hardcoded transform values – will be replaced
-  card.scaling = new Vector3(0.5, 0.5, 0.5);
+  card.scaling = new Vector3(0.6, 0.6, 0.6);
   // card.position = new Vector3(0, 1.4, 4);
 
   // card.scaling = new Vector3(0.8, 0.8, 0.8);
