@@ -14,7 +14,7 @@ const createScene = (canvas) => {
   const ground = createGround(); // used for WebXR teleportation
 
   var anchor = new TransformNode("");
-  anchor.position = new Vector3(0, 1, 2);
+  anchor.position = new Vector3(0, 1.4, 2);
 
   // Create the 3D UI manager
   var manager = new GUI3DManager(scene);
@@ -24,7 +24,7 @@ const createScene = (canvas) => {
 
   manager.addControl(panel);
   panel.linkToTransformNode(anchor);
-  panel.position.z = -1.5;
+  panel.position.z = -1.6;
   panel.rows = 3;
 
   // Let's add some buttons!
@@ -43,7 +43,8 @@ const createScene = (canvas) => {
 
   // Placeholder card
   const sampleCard = createItemCard();
-  sampleCard.position = new Vector3(-1, 1.4, 4);
+  sampleCard.position = new Vector3(2.4, 1.8, 4.6);
+  sampleCard.rotation.y = Math.PI / 5;
   // const compactCard = createCompactCard();
   // compactCard.position = new Vector3(1, 1.4, 4);
   // console.log(sampleCard);
@@ -65,33 +66,35 @@ const createCompactCard = () => {
   const cardMat = new StandardMaterial("light2");
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
   cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 2.2, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox("detail-card", { height: 2.6, width: 2, depth: 0.2 });
   card.material = cardMat;
 
-  const plane = MeshBuilder.CreatePlane("plane", { height: 2.2, width: 2 });
+  const plane = MeshBuilder.CreatePlane("plane", { height: 2.6, width: 2 });
   plane.position.z = -0.11;
   plane.parent = card;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 512, 2.4 * 512);
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
 
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
   const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
-  image.height = "1024px";
-  image.width = "1024px";
+  image.height = "2048px";
+  image.width = "2048px";
   image.paddingTop = 40;
   image.paddingLeft = 40;
   image.paddingRight = 40;
   panel.addControl(image);
 
   const title = new TextBlock("title");
-  title.text = "Title of a Library Item";
+  title.text = "Title of a Library Item With a long name";
   title.color = "white";
-  title.fontSize = 48;
-  title.height = "120px";
-  title.textHorizontalAlignment = 0;
+  title.fontSize = 144;
+  title.fontStyle = "bold";
+  title.textWrapping = true;
+  title.height = "440px";
+  title.textHorizontalAlignment = 2;
   title.textVerticalAlignment = 1;
   title.paddingTop = 40;
   title.paddingLeft = 40;
@@ -99,7 +102,7 @@ const createCompactCard = () => {
   panel.addControl(title);
 
   // Some hardcoded transform values – will be replaced
-  card.scaling = new Vector3(0.2, 0.2, 0.2);
+  card.scaling = new Vector3(0.3, 0.3, 0.3);
   // card.position = new Vector3(0, 1.4, 4);
 
   // card.scaling = new Vector3(0.8, 0.8, 0.8);
@@ -178,7 +181,7 @@ const createItemCard = () => {
   panel.addControl(button1);
 
   // Some hardcoded transform values – will be replaced
-  card.scaling = new Vector3(0.2, 0.2, 0.2);
+  card.scaling = new Vector3(0.5, 0.5, 0.5);
   // card.position = new Vector3(0, 1.4, 4);
 
   // card.scaling = new Vector3(0.8, 0.8, 0.8);
