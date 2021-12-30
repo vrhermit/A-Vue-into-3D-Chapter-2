@@ -31,9 +31,10 @@ const createScene = (canvas) => {
 
 const createItemCard = () => {
   const cardMat = new StandardMaterial("light2");
-  cardMat.diffuseColor = new Color3.FromHexString(brand.light2);
-  cardMat.specularColor = new Color3(0.1, 0.1, 0.1);
+  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
+  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
   const card = MeshBuilder.CreateBox("detail-card", { height: 3.4, width: 2, depth: 0.2 });
+  card.material = cardMat;
 
   const plane = MeshBuilder.CreatePlane("plane", { height: 3.4, width: 2 });
   plane.position.z = -0.11;
@@ -55,7 +56,7 @@ const createItemCard = () => {
 
   const title = new TextBlock("title");
   title.text = "Title of a Library Item";
-  title.color = "black";
+  title.color = "white";
   title.fontSize = 48;
   title.height = "120px";
   title.textHorizontalAlignment = 0;
@@ -70,7 +71,7 @@ const createItemCard = () => {
   description.text =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   description.textWrapping = true;
-  description.color = "black";
+  description.color = "white";
   description.fontSize = 36;
   description.height = "440px";
   description.textHorizontalAlignment = 0;
@@ -94,8 +95,12 @@ const createItemCard = () => {
   panel.addControl(button1);
 
   // Some hardcoded transform values – will be replaced
-  card.scaling = new Vector3(0.2, 0.2, 0.2);
-  card.position = new Vector3(0, 1.4, 4);
+  // card.scaling = new Vector3(0.2, 0.2, 0.2);
+  // card.position = new Vector3(0, 1.4, 4);
+
+  card.scaling = new Vector3(0.8, 0.8, 0.8);
+  card.position = new Vector3(0, 1.8, 4);
+
   return card;
 };
 
@@ -117,7 +122,7 @@ const createEnvironment = (scene) => {
   ambientLight1.intensity = 0.7;
   const ambientLight2 = new HemisphericLight("light", new Vector3(-5, 5, -5));
   ambientLight2.intensity = 0.7;
-  scene.clearColor = Color3.FromHexString(brand.dark4);
+  scene.clearColor = Color3.FromHexString(brand.light2);
 };
 
 const createGround = () => {
