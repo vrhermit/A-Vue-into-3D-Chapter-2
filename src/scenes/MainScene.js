@@ -14,7 +14,8 @@ const createScene = async (canvas) => {
   const ground = createGround(); // used for WebXR teleportation
 
   var anchor = new TransformNode("");
-  anchor.position = new Vector3(0, 1.4, 2);
+  anchor.position = new Vector3(0, 1.6, 0);
+  // anchor.rotation.x = Math.PI / -60;
 
   // Create the 3D UI manager
   var manager = new GUI3DManager(scene);
@@ -25,7 +26,7 @@ const createScene = async (canvas) => {
   manager.addControl(panel);
   panel.linkToTransformNode(anchor);
   panel.position.z = -1.6;
-  panel.rows = 3;
+  panel.rows = 2;
 
   // Let's add some buttons!
   var addButton = function () {
@@ -42,9 +43,9 @@ const createScene = async (canvas) => {
   panel.blockLayout = false;
 
   // Placeholder card
-  const sampleCard = createItemCard();
-  sampleCard.position = new Vector3(2.1, 1.6, 4.6);
-  sampleCard.rotation.y = Math.PI / 5;
+  const sampleCard = createDetailCard();
+  sampleCard.position = new Vector3(0, 0.9, 2);
+  sampleCard.rotation.x = Math.PI / 5;
 
   // WebXRDefaultExperience
   const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -75,7 +76,7 @@ const createCompactCard = () => {
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
-  const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
+  const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
   image.height = "2048px";
   image.width = "2048px";
   image.paddingTop = 40;
@@ -83,7 +84,7 @@ const createCompactCard = () => {
   image.paddingRight = 40;
   panel.addControl(image);
 
-  const title = new TextBlock("title");
+  const title = new TextBlock("CompactTitle");
   title.text = "Title of a Library Item With a long name";
   title.color = "white";
   title.fontSize = 144;
@@ -97,84 +98,84 @@ const createCompactCard = () => {
   title.paddingRight = 40;
   panel.addControl(title);
 
-  card.scaling = new Vector3(0.3, 0.3, 0.3);
+  card.scaling = new Vector3(0.25, 0.24, 0.24);
   const returnButton = new MeshButton3D(card, "pushButton");
   return returnButton;
 };
 
-const createItemCard = () => {
+const createDetailCard = () => {
   const cardMat = new StandardMaterial("light2");
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
   cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 3.6, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox("detail-card", { height: 1.1, width: 3.1, depth: 0.2 });
   card.material = cardMat;
 
-  const plane = MeshBuilder.CreatePlane("plane", { height: 3.6, width: 2 });
+  const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 3 });
   plane.position.z = -0.11;
   plane.parent = card;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 3.6 * 1024);
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 3 * 1024, 1 * 1024);
 
   const panel = new StackPanel();
+  panel.top = 0;
+  panel.left = 512;
+  panel.height = "1024px";
+  panel.width = "2048px";
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
-  const image = new Image("image", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
-  image.height = "2048px";
-  image.width = "2048px";
-  image.paddingTop = 80;
-  image.paddingLeft = 80;
-  image.paddingRight = 80;
-  panel.addControl(image);
+  const image = new Image("DetailImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
+  image.height = "1024px";
+  image.width = "1024px";
+  image.top = 0;
+  image.left = -1024;
+  image.paddingTop = 20;
+  image.paddingBottom = 20;
+  image.paddingLeft = 20;
+  image.paddingRight = 20;
+  advancedTexture.addControl(image);
 
-  const title = new TextBlock("title");
+  const title = new TextBlock("DetailTitle");
   title.text = "Title of a Library Item";
+  title.textWrapping = 2;
   title.color = "white";
-  title.fontSize = 144;
+  title.fontSize = 96;
   title.fontStyle = "bold";
-  title.height = "240px";
+  title.height = "192px";
   title.textHorizontalAlignment = 0;
-  title.textVerticalAlignment = 0;
-  title.paddingTop = 80;
-  title.paddingLeft = 80;
-  title.paddingRight = 80;
+  title.textVerticalAlignment = 2;
+  title.paddingLeft = 40;
+  title.paddingRight = 40;
   panel.addControl(title);
 
-  const description = new TextBlock("description");
+  const description = new TextBlock("DetailDescription");
   description.fontFamily = "Tahoma, sans-serif";
   description.text =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   description.textWrapping = true;
   description.color = "white";
-  description.fontSize = 96;
-  description.height = "1100px";
+  description.fontSize = 64;
+  description.height = "640px";
   description.textHorizontalAlignment = 0;
   description.textVerticalAlignment = 0;
   description.paddingTop = 40;
-  description.paddingLeft = 80;
-  description.paddingRight = 80;
+  description.paddingLeft = 40;
+  description.paddingRight = 40;
   panel.addControl(description);
 
-  const button1 = Button.CreateSimpleButton("but1", "Toggle Favorite");
-  button1.height = "240px";
+  const button1 = Button.CreateSimpleButton("DetailFavToggle", " ☆ ");
+  button1.height = "152px";
+  button1.width = "152px";
+  button1.left = -924;
   button1.color = "white";
-  button1.background = brand.pink;
-  button1.fontSize = 96;
-  button1.paddingLeft = 80;
-  button1.paddingRight = 80;
+  button1.background = brand.dark4;
+  button1.fontSize = 64;
   button1.onPointerUpObservable.add(function () {
     console.log("button1 clicked");
   });
-  button1.verticalAlignment = 1;
   panel.addControl(button1);
 
-  // Some hardcoded transform values – will be replaced
-  card.scaling = new Vector3(0.6, 0.6, 0.6);
-  // card.position = new Vector3(0, 1.4, 4);
-
-  // card.scaling = new Vector3(0.8, 0.8, 0.8);
-  // card.position = new Vector3(-1, 1.8, 4);
-
+  card.scaling = new Vector3(0.4, 0.4, 0.4);
   return card;
 };
 
