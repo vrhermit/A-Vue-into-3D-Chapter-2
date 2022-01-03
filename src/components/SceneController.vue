@@ -1,25 +1,35 @@
 <template>
-  <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
+  <div>
+    <button @click="sendAction">text control panel</button>
+    <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
+  </div>
 </template>
 
 <script>
 import { ref, onMounted } from "@vue/runtime-core";
-import createScene  from "@/scenes/MainScene.js";
+import { myScene, tester } from "@/scenes/MainScene.js";
 
 export default {
   name: "BabylonScene",
   setup() {
     const bjsCanvas = ref(null);
 
-    onMounted(async() => {
+    onMounted(async () => {
       if (bjsCanvas.value) {
-       await createScene(bjsCanvas.value);
+        await myScene.createScene(bjsCanvas.value);
       }
     });
 
     return {
       bjsCanvas,
     };
+  },
+  methods: {
+    sendAction() {
+      tester.value = "changing the value from the component";
+      // console.log(tester.value);
+      // myScene.controlPanelAction("test");
+    },
   },
 };
 </script>
