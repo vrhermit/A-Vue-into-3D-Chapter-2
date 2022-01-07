@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="clear()">Clear</button>
     <button @click="populate()">Populate</button>
     <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
   </div>
@@ -26,9 +25,6 @@ export default {
     };
   },
   methods: {
-    clear() {
-      myScene.clearCompactCards();
-    },
     populate() {
       const items = [];
       for (var index = 0; index < 12; index++) {
@@ -38,7 +34,6 @@ export default {
         };
         items.push(item);
       }
-      console.log(items);
       myScene.setCompactCards(items);
     },
   },

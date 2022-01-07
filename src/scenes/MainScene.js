@@ -67,32 +67,21 @@ const myScene = {
       scene.render();
     });
   },
-  clearCompactCards: () => {
-    clearSpherePanel(myScene.spherePanel);
-  },
+
   setCompactCards: function (items) {
     populateSpherePanel(myScene.spherePanel, items);
-    // myScene.spherePanel.dispose();
-    // const mesh = this.scene.getMeshByName("compact-card-0");
-    // console.log(this.compactTextures);
-    // console.info("mesh:", mesh);
-  }
-};
-
-const clearSpherePanel = (panel) => {
-  console.log("length", panel.children.length);
-  if (panel.children.length > 0) {
-    // Have to copy the array without reference to the original using the spread operator
-    // Without doing this, foreach only iterates over half the array
-    const children = [...panel.children];
-    children.forEach((child, index) => {
-      console.log(child, index);
-      panel.removeControl(child);
-    });
   }
 };
 
 const populateSpherePanel = (panel, items) => {
+  // Have to copy the array without reference to the original using the spread operator
+  // Without doing this, foreach only iterates over half the array
+  if (panel.children.length > 0) {
+    const children = [...panel.children];
+    children.forEach((child) => {
+      panel.removeControl(child);
+    });
+  }
   panel.blockLayout = true;
   items.forEach((item) => {
     panel.addControl(createCompactCard(item));
