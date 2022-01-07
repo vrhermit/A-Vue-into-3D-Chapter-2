@@ -17,7 +17,7 @@
                 alt=""
               />
             </template>
-          </td>
+                 </td>
           <td>
             <h1 v-html="item.title.rendered"></h1>
             <p style="font-size: 80%">{{ item.date }}</p>

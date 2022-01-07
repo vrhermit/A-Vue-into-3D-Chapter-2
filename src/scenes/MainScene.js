@@ -2,68 +2,109 @@ import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMat
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
-const createScene = async (canvas) => {
-  // Create and customize the scene
-  const engine = new Engine(canvas);
-  const scene = new Scene(engine);
-  createEnvironment(scene);
-  createCamera(canvas);
-  createTitle();
-  createLogo();
-  createBlocks();
-  const ground = createGround(); // used for WebXR teleportation
+const myScene = {
+  engine: null,
+  scene: null,
+  compactTextures: [],
 
-  var anchor = new TransformNode("");
-  anchor.position = new Vector3(0, 1.6, 0);
-  // anchor.rotation.x = Math.PI / -60;
+  spherePanel: null,
 
-  // Create the 3D UI manager
-  var manager = new GUI3DManager(scene);
+  createScene: async (canvas) => {
+    // Create and customize the scene
+    const engine = new Engine(canvas);
+    const scene = new Scene(engine);
 
-  var panel = new SpherePanel();
-  panel.margin = 0.05;
+    myScene.engine = engine;
+    myScene.scene = scene;
+    createEnvironment(scene);
+    createCamera(canvas);
+    createTitle();
+    createLogo();
+    createBlocks();
+    const ground = createGround(); // used for WebXR teleportation
 
-  manager.addControl(panel);
-  panel.linkToTransformNode(anchor);
-  panel.position.z = -1.6;
-  panel.rows = 2;
+    // Create the 3D UI manager
+    const manager = new GUI3DManager(scene);
+    const anchor = new TransformNode("");
+    anchor.position = new Vector3(0, 1.6, 0);
 
-  // Let's add some buttons!
-  var addButton = function () {
-    var button = createCompactCard();
-    panel.addControl(button);
+    var panel = new SpherePanel("spherePanel");
+    myScene.spherePanel = panel;
+    panel.margin = 0.05;
 
-    // button.text = "Button #" + panel.children.length;
-  };
+    manager.addControl(panel);
+    panel.linkToTransformNode(anchor);
+    panel.position.z = -1.6;
+    panel.rows = 2;
 
-  panel.blockLayout = true;
-  for (var index = 0; index < 12; index++) {
-    addButton();
+    // // Let's add some buttons!
+    // var addButton = function () {
+    //   var button = createCompactCard();
+    //   panel.addControl(button);
+
+    //   // button.text = "Button #" + panel.children.length;
+    // };
+
+    // panel.blockLayout = true;
+    // for (var index = 0; index < 12; index++) {
+    //   addButton();
+    // }
+    // panel.blockLayout = false;
+
+    // Placeholder card
+    const sampleCard = createDetailCard();
+    sampleCard.position = new Vector3(0, 0.9, 2);
+    sampleCard.rotation.x = Math.PI / 5;
+
+    // WebXRDefaultExperience
+    const xrDefault = scene.createDefaultXRExperienceAsync({
+      floorMeshes: [ground]
+    });
+    const xrHelper = xrDefault.baseExperience;
+    console.info("webxr:", xrHelper);
+
+    engine.runRenderLoop(() => {
+      scene.render();
+    });
+  },
+  clearCompactCards: () => {
+    clearSpherePanel(myScene.spherePanel);
+  },
+  setCompactCards: function (items) {
+    populateSpherePanel(myScene.spherePanel, items);
+    // myScene.spherePanel.dispose();
+    // const mesh = this.scene.getMeshByName("compact-card-0");
+    // console.log(this.compactTextures);
+    // console.info("mesh:", mesh);
   }
-  panel.blockLayout = false;
-
-  // Placeholder card
-  const sampleCard = createDetailCard();
-  sampleCard.position = new Vector3(0, 0.9, 2);
-  sampleCard.rotation.x = Math.PI / 5;
-
-  // WebXRDefaultExperience
-  const xrDefault = scene.createDefaultXRExperienceAsync({
-    floorMeshes: [ground]
-  });
-  const xrHelper = xrDefault.baseExperience;
-  console.info("webxr:", xrHelper);
-
-  engine.runRenderLoop(() => {
-    scene.render();
-  });
 };
 
-const createCompactCard = () => {
+const clearSpherePanel = (panel) => {
+  console.log("length", panel.children.length);
+  if (panel.children.length > 0) {
+    // Have to copy the array without reference to the original using the spread operator
+    // Without doing this, foreach only iterates over half the array
+    const children = [...panel.children];
+    children.forEach((child, index) => {
+      console.log(child, index);
+      panel.removeControl(child);
+    });
+  }
+};
+
+const populateSpherePanel = (panel, items) => {
+  panel.blockLayout = true;
+  items.forEach((item) => {
+    panel.addControl(createCompactCard(item));
+  });
+  panel.blockLayout = false;
+};
+
+const createCompactCard = (item) => {
   const cardMat = new StandardMaterial("light2");
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
   cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 2.6, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox(`compact-card-${item.id}`, { height: 2.6, width: 2, depth: 0.2 });
   card.material = cardMat;
 
   const plane = MeshBuilder.CreatePlane("plane", { height: 2.6, width: 2 });
@@ -71,11 +112,12 @@ const createCompactCard = () => {
   plane.parent = card;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
-
+  myScene.compactTextures.push(advancedTexture);
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
+  // const image = new Image("CompactImage", item.imageResponse.data.media_details.sizes.full.source_url);
   const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
   image.height = "2048px";
   image.width = "2048px";
@@ -85,7 +127,7 @@ const createCompactCard = () => {
   panel.addControl(image);
 
   const title = new TextBlock("CompactTitle");
-  title.text = "Title of a Library Item With a long name";
+  title.text = item.title;
   title.color = "white";
   title.fontSize = 144;
   title.fontStyle = "bold";
@@ -271,4 +313,4 @@ const makeBox = (colorName, parent) => {
   return mesh;
 };
 
-export default createScene;
+export default myScene;

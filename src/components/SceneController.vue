@@ -1,25 +1,46 @@
 <template>
-  <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
+  <div>
+    <button @click="clear()">Clear</button>
+    <button @click="populate()">Populate</button>
+    <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
+  </div>
 </template>
 
 <script>
 import { ref, onMounted } from "@vue/runtime-core";
-import createScene  from "@/scenes/MainScene.js";
+import myScene from "@/scenes/MainScene.js";
 
 export default {
   name: "BabylonScene",
   setup() {
     const bjsCanvas = ref(null);
 
-    onMounted(async() => {
+    onMounted(async () => {
       if (bjsCanvas.value) {
-       await createScene(bjsCanvas.value);
+        await myScene.createScene(bjsCanvas.value);
       }
     });
 
     return {
       bjsCanvas,
     };
+  },
+  methods: {
+    clear() {
+      myScene.clearCompactCards();
+    },
+    populate() {
+      const items = [];
+      for (var index = 0; index < 12; index++) {
+        const item = {
+          id: index,
+          title: `Item #${index}`,
+        };
+        items.push(item);
+      }
+      console.log(items);
+      myScene.setCompactCards(items);
+    },
   },
 };
 </script>
