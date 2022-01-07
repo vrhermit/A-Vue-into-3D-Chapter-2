@@ -12,12 +12,12 @@ const apiClient = axios.create({
 export default {
   getItems(perPage, page) {
     const axiosParams = () => {
-      const fields = ["id", "link", "title", "date", "acf", "featured_media", "categories", "tags"];
+      // const fields = ["id", "link", "title", "date", "acf","featured_image_src_large", featured_media", "categories", "tags"];
       const params = new URLSearchParams();
       params.append("page", page);
       params.append("per_page", perPage);
       params.append("_embed", true);
-      params.append("_fields", fields);
+      // params.append("_fields", fields);
       return params;
     };
     return apiClient.get("/library?", {

@@ -106,8 +106,8 @@ const createCompactCard = (item) => {
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
-  // const image = new Image("CompactImage", item.imageResponse.data.media_details.sizes.full.source_url);
-  const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
+  const image = new Image("CompactImage", item.image);
+  // const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
   image.height = "2048px";
   image.width = "2048px";
   image.paddingTop = 40;

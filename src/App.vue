@@ -9,13 +9,10 @@
       <a href="https://radicalappdev.com">radicalappdev.com</a>
     </p>
 
-    <p>
-      Nothing to see here yet.
-    </p>
+    <p>Nothing to see here yet.</p>
 
     <hr />
     <br />
-    <SceneController />
 
     <!-- <section v-if="errored">
       <p>Nope. Not gonna happen.</p>
@@ -47,6 +44,7 @@
         />
       </div>
     </section> -->
+    <SceneController />
   </div>
 </template>
 
@@ -59,8 +57,8 @@ export default {
   name: "App",
   components: {
     // ItemCard2D,
-    SceneController
-},
+    SceneController,
+  },
   data() {
     return {
       itemResponse: null,
