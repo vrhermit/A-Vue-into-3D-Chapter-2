@@ -1,78 +1,63 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
-import { ref, watchEffect } from "vue";
 
-export let tester = ref("test value");
+const createScene = async (canvas) => {
+  // Create and customize the scene
+  const engine = new Engine(canvas);
+  const scene = new Scene(engine);
+  createEnvironment(scene);
+  createCamera(canvas);
+  createTitle();
+  createLogo();
+  createBlocks();
+  const ground = createGround(); // used for WebXR teleportation
 
-export const myScene = {
-  controlPanelAction: function (action) {
-    // this.tester.value = this.tester.value + " " + action;
-    console.log("incoming action", action);
-    // console.log(action);
-  },
+  var anchor = new TransformNode("");
+  anchor.position = new Vector3(0, 1.6, 0);
+  // anchor.rotation.x = Math.PI / -60;
 
-  createScene: async (canvas) => {
-    // Create and customize the scene
-    const engine = new Engine(canvas);
-    const scene = new Scene(engine);
-    createEnvironment(scene);
-    createCamera(canvas);
-    createTitle();
-    createLogo();
-    createBlocks();
-    const ground = createGround(); // used for WebXR teleportation
+  // Create the 3D UI manager
+  var manager = new GUI3DManager(scene);
 
-    var anchor = new TransformNode("");
-    anchor.position = new Vector3(0, 1.6, 0);
+  var panel = new SpherePanel();
+  panel.margin = 0.05;
 
-    // Create the 3D UI manager
-    var manager = new GUI3DManager(scene);
+  manager.addControl(panel);
+  panel.linkToTransformNode(anchor);
+  panel.position.z = -1.6;
+  panel.rows = 2;
 
-    var panel = new SpherePanel();
-    panel.margin = 0.05;
+  // Let's add some buttons!
+  var addButton = function () {
+    var button = createCompactCard();
+    panel.addControl(button);
 
-    manager.addControl(panel);
-    panel.linkToTransformNode(anchor);
-    panel.position.z = -1.6;
-    panel.rows = 2;
+    // button.text = "Button #" + panel.children.length;
+  };
 
-    // Let's add some buttons!
-    var addButton = function () {
-      var button = createCompactCard();
-      panel.addControl(button);
-
-      // button.text = "Button #" + panel.children.length;
-    };
-
-    panel.blockLayout = true;
-    for (var index = 0; index < 12; index++) {
-      addButton();
-    }
-    panel.blockLayout = false;
-
-    // Placeholder card
-    const sampleCard = createDetailCard();
-    sampleCard.position = new Vector3(0, 0.9, 2);
-    sampleCard.rotation.x = Math.PI / 5;
-
-    // WebXRDefaultExperience
-    const xrDefault = scene.createDefaultXRExperienceAsync({
-      floorMeshes: [ground]
-    });
-    const xrHelper = xrDefault.baseExperience;
-    console.info("webxr:", xrHelper);
-
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
+  panel.blockLayout = true;
+  for (var index = 0; index < 12; index++) {
+    addButton();
   }
-};
+  panel.blockLayout = false;
 
-watchEffect(() => {
-  console.log("watching tester", tester.value);
-  myScene.controlPanelAction("send from watchEffect");
-});
+  // Placeholder card
+  const sampleCard = createDetailCard();
+  sampleCard.position = new Vector3(0, 0.9, 2);
+  sampleCard.rotation.x = Math.PI / 5;
+
+  // WebXRDefaultExperience
+  const xrDefault = scene.createDefaultXRExperienceAsync({
+    floorMeshes: [ground]
+  });
+  const xrHelper = xrDefault.baseExperience;
+  console.info("webxr:", xrHelper);
+
+  engine.runRenderLoop(() => {
+    scene.render();
+  });
+};
 
 const createCompactCard = () => {
   const cardMat = new StandardMaterial("light2");
@@ -286,4 +271,4 @@ const makeBox = (colorName, parent) => {
   return mesh;
 };
 
-export default myScene;
+export default createScene;
