@@ -5,9 +5,10 @@ import { brand } from "@/helpers/brand";
 const myScene = {
   engine: null,
   scene: null,
-  compactTextures: [],
+  // compactTextures: [],
 
   spherePanel: null,
+  detailTexture: null,
 
   createScene: async (canvas) => {
     // Create and customize the scene
@@ -23,6 +24,12 @@ const myScene = {
     createBlocks();
     const ground = createGround(); // used for WebXR teleportation
 
+    // Defail card
+    const sampleCard = createDetailCard();
+    sampleCard.position = new Vector3(0, 0.9, 2);
+    sampleCard.rotation.x = Math.PI / 5;
+    // myScene.detailCard = sampleCard;
+
     // Create the 3D UI manager
     const manager = new GUI3DManager(scene);
     const anchor = new TransformNode("");
@@ -36,25 +43,6 @@ const myScene = {
     panel.linkToTransformNode(anchor);
     panel.position.z = -1.6;
     panel.rows = 2;
-
-    // // Let's add some buttons!
-    // var addButton = function () {
-    //   var button = createCompactCard();
-    //   panel.addControl(button);
-
-    //   // button.text = "Button #" + panel.children.length;
-    // };
-
-    // panel.blockLayout = true;
-    // for (var index = 0; index < 12; index++) {
-    //   addButton();
-    // }
-    // panel.blockLayout = false;
-
-    // Placeholder card
-    const sampleCard = createDetailCard();
-    sampleCard.position = new Vector3(0, 0.9, 2);
-    sampleCard.rotation.x = Math.PI / 5;
 
     // WebXRDefaultExperience
     const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -101,7 +89,7 @@ const createCompactCard = (item) => {
   plane.parent = card;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
-  myScene.compactTextures.push(advancedTexture);
+  // myScene.compactTextures.push(advancedTexture);
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
@@ -130,7 +118,12 @@ const createCompactCard = (item) => {
   panel.addControl(title);
 
   card.scaling = new Vector3(0.25, 0.24, 0.24);
-  const returnButton = new MeshButton3D(card, "pushButton");
+  const returnButton = new MeshButton3D(card, `compact-card-button-${item.id}`);
+  returnButton.onPointerDownObservable.add(() => {
+    console.log(returnButton.name + " pushed.", myScene.detailTexture);
+    const texture = myScene.detailTexture;
+    console.log(texture.getControlByName("DetailTitle"));
+  });
   return returnButton;
 };
 
@@ -146,8 +139,9 @@ const createDetailCard = () => {
   plane.parent = card;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 3 * 1024, 1 * 1024);
+  myScene.detailTexture = advancedTexture;
 
-  const panel = new StackPanel();
+  const panel = new StackPanel("DetailPanel");
   panel.top = 0;
   panel.left = 512;
   panel.height = "1024px";
