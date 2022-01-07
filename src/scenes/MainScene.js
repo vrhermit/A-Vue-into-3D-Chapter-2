@@ -1,16 +1,20 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
-import { ref, watchEffect } from "vue";
-
-export let tester = ref("test value");
+import { reactive, ref, watchEffect } from "vue";
 
 export const myScene = {
   engine: null,
   scene: null,
   guiManager: null,
 
-  compactCards: [],
+  itemResponse: reactive([]),
+  totalItems: ref(0),
+  loading: ref(true),
+  errored: ref(false),
+  page: ref(1),
+  perPage: ref(12),
+
   compactCardTextures: [],
 
   controlPanelAction: function (action) {
@@ -54,8 +58,6 @@ export const myScene = {
       var button = createCompactCard();
 
       panel.addControl(button);
-
-      // button.text = "Button #" + panel.children.length;
     };
 
     panel.blockLayout = true;
@@ -83,13 +85,14 @@ export const myScene = {
 };
 
 watchEffect(() => {
-  console.log("watching tester", tester.value);
-  myScene.controlPanelAction("send from watchEffect");
-  console.info("engine:", myScene.engine);
-  console.info("scene:", myScene.scene?.rootNodes);
-  let findPanel = myScene.guiManager?.utilityLayer.utilityLayerScene.getNodeByName("panelName")?._children[0];
-  console.log("panel: ", findPanel);
-  console.log("compact cards", myScene.compactCardTextures);
+  console.log("myScene.loaded", myScene.loaded);
+  console.log("myScene.itemResponse", myScene.itemResponse);
+  // myScene.controlPanelAction("send from watchEffect");
+  // console.info("engine:", myScene.engine);
+  // console.info("scene:", myScene.scene?.rootNodes);
+  // let findPanel = myScene.guiManager?.utilityLayer.utilityLayerScene.getNodeByName("panelName")?._children[0];
+  // console.log("panel: ", findPanel);
+  // console.log("compact cards", myScene.compactCardTextures);
 });
 
 const createCompactCard = () => {

@@ -6,8 +6,9 @@
 </template>
 
 <script>
+import LibraryService from "@/services/LibraryService.js";
 import { ref, onMounted } from "@vue/runtime-core";
-import { myScene, tester } from "@/scenes/MainScene.js";
+import { myScene } from "@/scenes/MainScene.js";
 
 export default {
   name: "BabylonScene",
@@ -18,6 +19,7 @@ export default {
       if (bjsCanvas.value) {
         await myScene.createScene(bjsCanvas.value);
       }
+        this.loadData();
     });
 
     return {
@@ -26,9 +28,33 @@ export default {
   },
   methods: {
     sendAction() {
-      tester.value = "changing the value from the component";
       // console.log(tester.value);
       // myScene.controlPanelAction("test");
+    },
+    loadData() {
+      myScene.loading = true;
+      myScene.itemResponse = null;
+      return LibraryService.getItems(12, myScene.page)
+        .then((response) => {
+          myScene.itemResponse = response;
+          myScene.totalItems = response.headers["x-wp-total"];
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => (myScene.loading = false));
+    },
+    loadPrevious() {
+      if (myScene.page > 1) {
+        myScene.page = myScene.page - 1;
+        this.loadData();
+      }
+    },
+    loadNext() {
+      if (myScene.page < myScene.itemResponse.headers["x-wp-totalpages"]) {
+        myScene.page = myScene.page + 1;
+        this.loadData();
+      }
     },
   },
 };
