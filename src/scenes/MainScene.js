@@ -6,24 +6,16 @@ import { ref, watchEffect } from "vue";
 export let tester = ref("test value");
 
 export const myScene = {
-  engine: null,
-  scene: null,
-  guiManager: null,
-
-  compactCards: [],
-  compactCardTextures: [],
-
   controlPanelAction: function (action) {
+    // this.tester.value = this.tester.value + " " + action;
     console.log("incoming action", action);
+    // console.log(action);
   },
 
   createScene: async (canvas) => {
     // Create and customize the scene
     const engine = new Engine(canvas);
     const scene = new Scene(engine);
-    myScene.engine = engine;
-    myScene.scene = scene;
-
     createEnvironment(scene);
     createCamera(canvas);
     createTitle();
@@ -35,13 +27,9 @@ export const myScene = {
     anchor.position = new Vector3(0, 1.6, 0);
 
     // Create the 3D UI manager
-    const manager = new GUI3DManager(scene);
-    myScene.guiManager = manager;
+    var manager = new GUI3DManager(scene);
 
     var panel = new SpherePanel();
-    panel._createNode = (scene) => {
-      return new TransformNode("panelName", scene);
-    };
     panel.margin = 0.05;
 
     manager.addControl(panel);
@@ -52,7 +40,6 @@ export const myScene = {
     // Let's add some buttons!
     var addButton = function () {
       var button = createCompactCard();
-
       panel.addControl(button);
 
       // button.text = "Button #" + panel.children.length;
@@ -85,18 +72,13 @@ export const myScene = {
 watchEffect(() => {
   console.log("watching tester", tester.value);
   myScene.controlPanelAction("send from watchEffect");
-  console.info("engine:", myScene.engine);
-  console.info("scene:", myScene.scene?.rootNodes);
-  let findPanel = myScene.guiManager?.utilityLayer.utilityLayerScene.getNodeByName("panelName")?._children[0];
-  console.log("panel: ", findPanel);
-  console.log("compact cards", myScene.compactCardTextures);
 });
 
 const createCompactCard = () => {
   const cardMat = new StandardMaterial("light2");
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
   cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("compact-card", { height: 2.6, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox("detail-card", { height: 2.6, width: 2, depth: 0.2 });
   card.material = cardMat;
 
   const plane = MeshBuilder.CreatePlane("plane", { height: 2.6, width: 2 });
@@ -108,7 +90,6 @@ const createCompactCard = () => {
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
-  myScene.compactCardTextures.push(advancedTexture);
 
   const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
   image.height = "2048px";

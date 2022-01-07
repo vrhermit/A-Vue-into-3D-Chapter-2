@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>A Vue into 3D</h1>
-    <h2>Chapter 2.2 – Babylon JS</h2>
+    <h2>Chapter 2.0 – Babylon JS</h2>
     <p>
       <b>About:</b> This template is part of a series of articles that I'm
       working on as I learn various ways to connect 3D JS frameworks to Vue JS.
@@ -9,7 +9,9 @@
       <a href="https://radicalappdev.com">radicalappdev.com</a>
     </p>
 
-    <p>Nothing to see here yet.</p>
+    <p>
+      Nothing to see here yet.
+    </p>
 
     <hr />
     <br />
@@ -57,8 +59,8 @@ export default {
   name: "App",
   components: {
     // ItemCard2D,
-    SceneController,
-  },
+    SceneController
+},
   data() {
     return {
       itemResponse: null,
