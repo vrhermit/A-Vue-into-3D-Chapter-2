@@ -1,11 +1,10 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, Button, MeshButton3D, GUI3DManager, SpherePanel } from "@babylonjs/gui";
+import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
 const myScene = {
   engine: null,
   scene: null,
-  // compactTextures: [],
 
   spherePanel: null,
   detailTexture: null,
@@ -28,7 +27,6 @@ const myScene = {
     const sampleCard = createDetailCard();
     sampleCard.position = new Vector3(0, 0.9, 2);
     sampleCard.rotation.x = Math.PI / 5;
-    // myScene.detailCard = sampleCard;
 
     // Create the 3D UI manager
     const manager = new GUI3DManager(scene);
@@ -42,7 +40,19 @@ const myScene = {
     manager.addControl(panel);
     panel.linkToTransformNode(anchor);
     panel.position.z = -1.6;
-    panel.rows = 2;
+    panel.columns = 6;
+    // panel.rows = 2;
+    // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
+    panel._sphericalMapping = function (source) {
+      let newPos = new Vector3(0, 0, this._radius);
+
+      let xAngle = source.y / this._radius;
+      let yAngle = source.x / this._radius;
+
+      Matrix.RotationYawPitchRollToRef(yAngle, xAngle, 0, TmpVectors.Matrix[0]);
+
+      return Vector3.TransformNormal(newPos, TmpVectors.Matrix[0]);
+    };
 
     // WebXRDefaultExperience
     const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -89,13 +99,11 @@ const createCompactCard = (item) => {
   plane.parent = card;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
-  // myScene.compactTextures.push(advancedTexture);
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
   advancedTexture.addControl(panel);
 
   const image = new Image("CompactImage", item.image);
-  // const image = new Image("CompactImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
   image.height = "2048px";
   image.width = "2048px";
   image.paddingTop = 40;
@@ -109,9 +117,9 @@ const createCompactCard = (item) => {
   title.fontSize = 144;
   title.fontStyle = "bold";
   title.textWrapping = true;
-  title.height = "440px";
+  title.height = "512px";
   title.textHorizontalAlignment = 2;
-  title.textVerticalAlignment = 1;
+  title.textVerticalAlignment = 0;
   title.paddingTop = 40;
   title.paddingLeft = 40;
   title.paddingRight = 40;
@@ -124,6 +132,7 @@ const createCompactCard = (item) => {
     console.log(texture.getControlByName("DetailTitle"));
     myScene.detailTexture.getControlByName("DetailTitle").text = item.title;
     myScene.detailTexture.getControlByName("DetailDescription").text = item.description;
+    myScene.detailTexture.getControlByName("DetailImage").source = item.image;
   });
   return returnButton;
 };
@@ -189,17 +198,23 @@ const createDetailCard = () => {
   description.paddingRight = 40;
   panel.addControl(description);
 
-  const button1 = Button.CreateSimpleButton("DetailFavToggle", " ☆ ");
-  button1.height = "152px";
-  button1.width = "152px";
-  button1.left = -924;
-  button1.color = "white";
-  button1.background = brand.dark4;
-  button1.fontSize = 64;
-  button1.onPointerUpObservable.add(function () {
-    console.log("button1 clicked");
+  const toggle = new ToggleButton("DetailToggle");
+  console.log(toggle);
+  toggle.height = "152px";
+  toggle.width = "152px";
+  toggle.left = -924;
+  toggle.background = "#718096";
+  toggle.isActive = false;
+  toggle.onPointerClickObservable.add(() => {
+    toggle.isActive = !toggle.isActive;
+    toggle.background = toggle.isActive ? "#03c4a1" : "#718096";
   });
-  panel.addControl(button1);
+  panel.addControl(toggle);
+
+  const tb = new TextBlock("FavToggleText", " ☆ ");
+  tb.color = "white";
+  tb.fontSize = 64;
+  toggle.addControl(tb);
 
   card.scaling = new Vector3(0.4, 0.4, 0.4);
   return card;
