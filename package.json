@@ -8,10 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@babylonjs/core": "^4.2.0",
-    "@babylonjs/inspector": "^4.2.0",
+    "@babylonjs/core": "^5.0.0-beta.2",
+    "@babylonjs/gui": "^5.0.0-beta.2",
     "axios": "^0.24.0",
-    "babylonjs-gui": "^4.2.0",
     "core-js": "^3.6.5",
     "vue": "^3.0.0"
   },

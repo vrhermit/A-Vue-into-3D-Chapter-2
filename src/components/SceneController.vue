@@ -67,7 +67,7 @@ export default {
         return {
           id: item.id,
           title: item.title.rendered,
-          content: item.acf.acf_library_description,
+          description: item.acf.acf_library_description,
           image: item.featured_image_src_large[0],
         };
       });

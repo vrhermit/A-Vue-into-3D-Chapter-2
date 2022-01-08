@@ -120,9 +120,10 @@ const createCompactCard = (item) => {
   card.scaling = new Vector3(0.25, 0.24, 0.24);
   const returnButton = new MeshButton3D(card, `compact-card-button-${item.id}`);
   returnButton.onPointerDownObservable.add(() => {
-    console.log(returnButton.name + " pushed.", myScene.detailTexture);
     const texture = myScene.detailTexture;
     console.log(texture.getControlByName("DetailTitle"));
+    myScene.detailTexture.getControlByName("DetailTitle").text = item.title;
+    myScene.detailTexture.getControlByName("DetailDescription").text = item.description;
   });
   return returnButton;
 };
