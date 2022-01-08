@@ -20,7 +20,6 @@ const myScene = {
     createCamera(canvas);
     createTitle();
     createLogo();
-    createBlocks();
     const ground = createGround(); // used for WebXR teleportation
 
     // Defail card
@@ -41,8 +40,8 @@ const myScene = {
     panel.linkToTransformNode(anchor);
     panel.position.z = -1.6;
     panel.columns = 6;
-    // panel.rows = 2;
     // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
+    // TODO: Check to see if there is a new way to do this in 5.0
     panel._sphericalMapping = function (source) {
       let newPos = new Vector3(0, 0, this._radius);
 
@@ -289,16 +288,6 @@ const createLogo = () => {
   makeBox("pink", group).position = new Vector3(0.5, 0, 0);
   makeBox("blue", group).position = new Vector3(0, 0.5, 0);
   makeBox("green", group).position = new Vector3(0, 0, 0.5);
-};
-
-const createBlocks = () => {
-  // Just placing some blocks in the scene for fun
-  const group = new Mesh("block-group");
-  group.position = new Vector3(0, 0.5, 0);
-  makeBox("light2", group).position = new Vector3(-2, 0, 4);
-  makeBox("pink", group).position = new Vector3(2, 0, 4);
-  makeBox("blue", group).position = new Vector3(-2, 0, -2);
-  makeBox("green", group).position = new Vector3(2, 0, -2);
 };
 
 const makeBox = (colorName, parent) => {
