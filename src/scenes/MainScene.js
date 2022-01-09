@@ -1,8 +1,9 @@
 import { Engine, Scene, Vector3, Matrix, TmpVectors, MeshBuilder, StandardMaterial, Color3, TransformNode } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
+import createCompactCard from "@/scenes/SceneHelpers/CompactCard";
 
 const myScene = {
   engine: null,
@@ -71,10 +72,8 @@ const myScene = {
     });
   },
 
-  // Call these functions from Vue to pass in the data or setup the scene
-  setCompactCards: function (items) {
-    populateSpherePanel(myScene.spherePanel, items);
-  },
+  // --- Call these functions from Vue to pass in the data or setup the scene ---
+
   addStartMenu: function (startButtonCallback) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
     const startButton = createStartMenu(startButtonCallback);
@@ -82,73 +81,25 @@ const myScene = {
     startButton.linkToTransformNode = myScene.anchor;
     startButton.position = new Vector3(0, 1.3, 2.2);
     startButton.scaling = new Vector3(0.4, 0.4, 0.4);
-  }
-};
+  },
 
-const populateSpherePanel = (panel, items) => {
-  // Have to copy the array without reference to the original using the spread operator
-  // Without doing this, foreach only iterates over half the array
-  if (panel.children.length > 0) {
-    const children = [...panel.children];
-    children.forEach((child) => {
-      panel.removeControl(child);
+  setCompactCards: function (items) {
+    // Have to copy the array without reference to the original using the spread operator
+    // Without doing this, foreach only iterates over half the array
+    const panel = myScene.spherePanel;
+    panel.blockLayout = true;
+    if (panel.children.length > 0) {
+      const children = [...panel.children];
+      children.forEach((child) => {
+        panel.removeControl(child);
+      });
+    }
+    items.forEach((item) => {
+      const card = createCompactCard(item, myScene.detailTexture, myScene.scene);
+      panel.addControl(card);
     });
+    panel.blockLayout = false;
   }
-  panel.blockLayout = true;
-  items.forEach((item) => {
-    panel.addControl(createCompactCard(item));
-  });
-  panel.blockLayout = false;
-};
-
-const createCompactCard = (item) => {
-  const cardMat = new StandardMaterial("light2");
-  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
-  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox(`compact-card-${item.id}`, { height: 2.6, width: 2, depth: 0.2 });
-  card.material = cardMat;
-
-  const plane = MeshBuilder.CreatePlane("plane", { height: 2.6, width: 2 });
-  plane.position.z = -0.11;
-  plane.parent = card;
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
-  const panel = new StackPanel();
-  panel.verticalAlignment = 0;
-  advancedTexture.addControl(panel);
-
-  const image = new Image("CompactImage", item.image);
-  image.height = "2048px";
-  image.width = "2048px";
-  image.paddingTop = 40;
-  image.paddingLeft = 40;
-  image.paddingRight = 40;
-  panel.addControl(image);
-
-  const title = new TextBlock("CompactTitle");
-  title.text = item.title;
-  title.color = "white";
-  title.fontSize = 144;
-  title.fontStyle = "bold";
-  title.textWrapping = true;
-  title.height = "512px";
-  title.textHorizontalAlignment = 2;
-  title.textVerticalAlignment = 0;
-  title.paddingTop = 40;
-  title.paddingLeft = 40;
-  title.paddingRight = 40;
-  panel.addControl(title);
-
-  card.scaling = new Vector3(0.25, 0.24, 0.24);
-  const returnButton = new MeshButton3D(card, `compact-card-button-${item.id}`);
-  returnButton.onPointerDownObservable.add(() => {
-    const texture = myScene.detailTexture;
-    console.log(texture.getControlByName("DetailTitle"));
-    myScene.detailTexture.getControlByName("DetailTitle").text = item.title;
-    myScene.detailTexture.getControlByName("DetailDescription").text = item.description;
-    myScene.detailTexture.getControlByName("DetailImage").source = item.image;
-  });
-  return returnButton;
 };
 
 const createDetailCard = () => {
