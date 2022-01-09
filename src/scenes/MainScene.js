@@ -1,7 +1,8 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
+import { Engine, Scene, Vector3, Matrix, TmpVectors, MeshBuilder, StandardMaterial, Color3, TransformNode } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
-import createLogo from "@/scenes/SceneHelpers/CreateLogo";
+import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
+import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
 
 const myScene = {
   engine: null,
@@ -20,10 +21,10 @@ const myScene = {
     myScene.engine = engine;
     myScene.scene = scene;
     createEnvironment(scene);
-    createCamera(canvas);
-    createTitle();
+    createCamera(canvas, scene);
+    createTitle(scene);
     createLogo(scene);
-    const ground = createGround(); // used for WebXR teleportation
+    const ground = createGround(scene); // used for WebXR teleportation
 
     // Defail card
     const sampleCard = createDetailCard();
@@ -76,7 +77,10 @@ const myScene = {
   },
   addStartMenu: function (startMenuSetup) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
-    createStartMenu(startMenuSetup);
+    const start = createStartMenu(startMenuSetup);
+    myScene.manager.addControl(start);
+    start.linkToTransformNode = myScene.anchor;
+    start.position = new Vector3(0, 1.3, 2.2);
   }
 };
 
@@ -94,40 +98,6 @@ const populateSpherePanel = (panel, items) => {
     panel.addControl(createCompactCard(item));
   });
   panel.blockLayout = false;
-};
-
-const createStartMenu = (startMenuSetup) => {
-  const cardMat = new StandardMaterial("light2");
-  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
-  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 0.8, width: 1.2, depth: 0.2 });
-  card.material = cardMat;
-
-  const plane = MeshBuilder.CreatePlane("plane", { height: 0.8, width: 1.2 });
-  plane.position.z = -0.11;
-  plane.parent = card;
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 1.2 * 1024, 0.8 * 1024);
-
-  const title = new TextBlock("StartText");
-  title.text = "START";
-  title.color = "white";
-  title.fontSize = 96;
-  title.fontStyle = "bold";
-  title.height = "192px";
-  advancedTexture.addControl(title);
-
-  card.scaling = new Vector3(0.4, 0.4, 0.4);
-  const returnButton = new MeshButton3D(card, `start-button`);
-  myScene.manager.addControl(returnButton);
-  returnButton.linkToTransformNode = myScene.anchor;
-  returnButton.onPointerDownObservable.add(() => {
-    startMenuSetup();
-    returnButton.dispose();
-  });
-  returnButton.position = new Vector3(0, 1.3, 2.2);
-
-  return returnButton;
 };
 
 const createCompactCard = (item) => {
@@ -260,65 +230,6 @@ const createDetailCard = () => {
 
   card.scaling = new Vector3(0.4, 0.4, 0.4);
   return card;
-};
-
-const createCamera = (canvas) => {
-  // Add an ArcRotateCamera to the scene and attach it to the canvas
-  // ArcRotateCamera is used to rotate the camera around the scene when not using WebXR
-  const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new Vector3(0, 0, 0));
-  camera.wheelDeltaPercentage = 0.01;
-  camera.upperBetaLimit = Math.PI / 1.5;
-  camera.lowerRadiusLimit = 2;
-  camera.upperRadiusLimit = 50;
-  camera.setPosition(new Vector3(0, 1.5, 0));
-  camera.setTarget(new Vector3(0, 2, 4));
-  camera.attachControl(canvas, true);
-};
-
-const createEnvironment = (scene) => {
-  // Customize the scene lighting and background color
-  const ambientLight1 = new HemisphericLight("light", new Vector3(5, 5, 5));
-  ambientLight1.intensity = 0.7;
-  const ambientLight2 = new HemisphericLight("light", new Vector3(-5, 5, -5));
-  ambientLight2.intensity = 0.7;
-  scene.clearColor = Color3.FromHexString(brand.light2);
-};
-
-const createGround = () => {
-  // Add a ground plane to the scene. Used for WebXR teleportation
-  const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 });
-  const groundMat = new StandardMaterial("ground-material");
-  groundMat.alpha = 1;
-  groundMat.diffuseColor = new Color3.FromHexString(brand.dark4);
-  groundMat.specularColor = new Color3(0.2, 0.2, 0.2);
-  ground.material = groundMat;
-  return ground;
-};
-
-const createTitle = () => {
-  const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 1 });
-  plane.position = new Vector3(0, 3, 6);
-  plane.scaling = new Vector3(2, 2, 2);
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-
-  const panel = new StackPanel();
-  panel.verticalAlignment = 0;
-  panel.height = "400px";
-
-  advancedTexture.addControl(panel);
-
-  const title = new TextBlock("title");
-  title.text = "Extended Collection";
-  title.fontSize = 96;
-  title.height = "160px";
-  panel.addControl(title);
-
-  const subtitle = new TextBlock("title");
-  subtitle.text = "Curating the Immersive Web";
-  subtitle.fontSize = 64;
-  subtitle.height = "120px";
-  panel.addControl(subtitle);
 };
 
 export default myScene;
