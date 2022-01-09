@@ -1,5 +1,5 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton, Button } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
 const myScene = {
@@ -65,8 +65,25 @@ const myScene = {
     });
   },
 
+  // Call this from Vue to pass data into the scene
   setCompactCards: function (items) {
     populateSpherePanel(myScene.spherePanel, items);
+  },
+  createStartButton: function (callback) {
+    // GUI
+    var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    var button1 = Button.CreateSimpleButton("but1", "Click Me");
+    button1.width = "150px";
+    button1.height = "40px";
+    button1.color = "white";
+    button1.cornerRadius = 20;
+    button1.background = "green";
+    button1.onPointerUpObservable.add(function () {
+      // alert("you did it!");
+      callback();
+    });
+    advancedTexture.addControl(button1);
   }
 };
 

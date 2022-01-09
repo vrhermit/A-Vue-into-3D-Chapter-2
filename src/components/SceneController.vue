@@ -29,6 +29,7 @@ export default {
     onMounted(async () => {
       if (bjsCanvas.value) {
         await myScene.createScene(bjsCanvas.value);
+        // myScene.createStartButton(this.populate());
       }
     });
 
@@ -76,6 +77,9 @@ export default {
   },
   created() {
     this.loadData();
+  },
+  mounted() {
+    myScene.createStartButton(this.populate);
   },
 };
 </script>
