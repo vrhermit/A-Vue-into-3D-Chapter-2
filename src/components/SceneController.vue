@@ -11,8 +11,6 @@
 
 <script>
 import LibraryService from "@/services/LibraryService.js";
-
-// import { ref, onMounted } from "@vue/runtime-core";
 import myScene from "@/scenes/MainScene.js";
 
 export default {
@@ -27,20 +25,6 @@ export default {
       perPage: 12,
     };
   },
-  // setup() {
-  //   const bjsCanvas = ref(null);
-
-  //   onMounted(async () => {
-  //     if (bjsCanvas.value) {
-  //       await myScene.createScene(bjsCanvas.value);
-  //       // myScene.createStartButton(this.populate());
-  //     }
-  //   });
-
-  //   return {
-  //     bjsCanvas,
-  //   };
-  // },
   methods: {
     loadData() {
       this.loading = true;

@@ -1,6 +1,7 @@
-import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
+import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
+import createLogo from "@/scenes/SceneHelpers/CreateLogo";
 
 const myScene = {
   engine: null,
@@ -21,7 +22,7 @@ const myScene = {
     createEnvironment(scene);
     createCamera(canvas);
     createTitle();
-    createLogo();
+    createLogo(scene);
     const ground = createGround(); // used for WebXR teleportation
 
     // Defail card
@@ -318,29 +319,6 @@ const createTitle = () => {
   subtitle.fontSize = 64;
   subtitle.height = "120px";
   panel.addControl(subtitle);
-};
-
-const createLogo = () => {
-  // Placeholder logo - need to put something together in Blender
-  const group = new Mesh("logo-group");
-  group.position = new Vector3(-1.5, 3.5, 6);
-  group.rotation = new Vector3(0, 2, 0);
-  group.scaling = new Vector3(0.5, 0.5, 0.5);
-  makeBox("light2", group).position = new Vector3(0, 0, 0);
-  makeBox("pink", group).position = new Vector3(0.5, 0, 0);
-  makeBox("blue", group).position = new Vector3(0, 0.5, 0);
-  makeBox("green", group).position = new Vector3(0, 0, 0.5);
-};
-
-const makeBox = (colorName, parent) => {
-  // Create a colored box from using a string to get the color from the Brand object
-  const mat = new StandardMaterial(`${colorName}-material`);
-  mat.diffuseColor = new Color3.FromHexString(brand[colorName]);
-  mat.specularColor = new Color3(0.1, 0.1, 0.1);
-  const mesh = MeshBuilder.CreateBox(`${colorName}-box`, { size: 0.5 });
-  mesh.material = mat;
-  mesh.parent = parent;
-  return mesh;
 };
 
 export default myScene;
