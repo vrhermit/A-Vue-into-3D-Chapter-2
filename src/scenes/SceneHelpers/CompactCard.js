@@ -45,7 +45,8 @@ const createCompactCard = (item, detailTexture, scene) => {
   const returnButton = new MeshButton3D(card, `compact-card-button-${item.id}`);
   returnButton.onPointerDownObservable.add(() => {
     // The Advanced Dynamic Texture that that main detail card uses to draw UI
-    const texture = detailTexture;
+    const texture = scene.getTextureByName("detail-texture");
+
     // Get controls by name/string and update them with data from the item
     texture.getControlByName("detail-title").text = item.title;
     texture.getControlByName("detail-description").text = item.description;

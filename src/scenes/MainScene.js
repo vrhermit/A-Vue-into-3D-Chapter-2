@@ -12,7 +12,6 @@ const myScene = {
   anchor: null,
 
   spherePanel: null,
-  detailTexture: null,
 
   createScene: async (canvas) => {
     // Create and customize the scene
@@ -28,9 +27,7 @@ const myScene = {
     const ground = createGround(scene); // used for WebXR teleportation
 
     // Detail card
-    // TODO: Replace this method or caching the detail texture. Instead, update the compact card with a query that can find the detail card texture in the scene graph
-    const detailTexture = createDetailCard(scene);
-    myScene.detailTexture = detailTexture;
+    createDetailCard(scene);
 
     // Create the 3D UI manager
     const manager = new GUI3DManager(scene);

@@ -14,7 +14,7 @@ const createDetailCard = (scene) => {
   plane.parent = card;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 3 * 1024, 1 * 1024);
-  //   myScene.detailTexture = advancedTexture;
+  advancedTexture.name = "detail-texture";
 
   const panel = new StackPanel("detail-panel");
   panel.top = 0;
@@ -63,7 +63,6 @@ const createDetailCard = (scene) => {
   panel.addControl(description);
 
   const toggle = new ToggleButton("detail-fav-toggle");
-  console.log(toggle);
   toggle.height = "152px";
   toggle.width = "152px";
   toggle.left = -924;
