@@ -1,5 +1,5 @@
-import { MeshBuilder, StandardMaterial, Color3, Vector3 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D } from "@babylonjs/gui";
+import { MeshBuilder, StandardMaterial, Color3, Vector3, Matrix, TmpVectors } from "@babylonjs/core";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
 const createCompactCard = (item, detailTexture, scene) => {
@@ -55,4 +55,25 @@ const createCompactCard = (item, detailTexture, scene) => {
   return returnButton;
 };
 
-export default createCompactCard;
+const createSpherePanel = () => {
+  const panel = new SpherePanel("compact-panel-container");
+  panel.margin = 0.05;
+  panel.position.z = -1.6;
+  panel.columns = 6;
+  // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
+  // TODO: Check to see if there is a new way to do this in 5.0
+  panel._sphericalMapping = function (source) {
+    let newPos = new Vector3(0, 0, this._radius);
+
+    let xAngle = source.y / this._radius;
+    let yAngle = source.x / this._radius;
+
+    Matrix.RotationYawPitchRollToRef(yAngle, xAngle, 0, TmpVectors.Matrix[0]);
+
+    return Vector3.TransformNormal(newPos, TmpVectors.Matrix[0]);
+  };
+
+  return panel;
+};
+
+export { createCompactCard, createSpherePanel };

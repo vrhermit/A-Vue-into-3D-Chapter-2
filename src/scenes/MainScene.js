@@ -1,8 +1,8 @@
-import { Engine, Scene, Vector3, Matrix, TmpVectors, TransformNode } from "@babylonjs/core";
-import { GUI3DManager, SpherePanel } from "@babylonjs/gui";
+import { Engine, Scene, Vector3, TransformNode } from "@babylonjs/core";
+import { GUI3DManager } from "@babylonjs/gui";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
-import createCompactCard from "@/scenes/SceneHelpers/CompactCard";
+import { createCompactCard, createSpherePanel } from "@/scenes/SceneHelpers/CompactCard";
 import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
 
 const myScene = {
@@ -10,7 +10,6 @@ const myScene = {
   scene: null,
   manager: null,
   anchor: null,
-
   spherePanel: null,
 
   createScene: async (canvas) => {
@@ -29,33 +28,19 @@ const myScene = {
     // Detail card
     createDetailCard(scene);
 
-    // Create the 3D UI manager
+    // Create the 3D GUI
     const manager = new GUI3DManager(scene);
     const anchor = new TransformNode("");
     anchor.position = new Vector3(0, 1.6, 0);
-    myScene.manager = manager;
-    myScene.anchor = anchor;
 
-    var panel = new SpherePanel("spherePanel");
-    myScene.spherePanel = panel;
-    panel.margin = 0.05;
-
+    const panel = createSpherePanel();
     manager.addControl(panel);
     panel.linkToTransformNode(anchor);
-    panel.position.z = -1.6;
-    panel.columns = 6;
-    // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
-    // TODO: Check to see if there is a new way to do this in 5.0
-    panel._sphericalMapping = function (source) {
-      let newPos = new Vector3(0, 0, this._radius);
 
-      let xAngle = source.y / this._radius;
-      let yAngle = source.x / this._radius;
-
-      Matrix.RotationYawPitchRollToRef(yAngle, xAngle, 0, TmpVectors.Matrix[0]);
-
-      return Vector3.TransformNormal(newPos, TmpVectors.Matrix[0]);
-    };
+    // Stash these in the myScene object for later use
+    myScene.manager = manager;
+    myScene.anchor = anchor;
+    myScene.spherePanel = panel;
 
     // WebXRDefaultExperience
     const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -85,7 +70,7 @@ const myScene = {
     // Without doing this, foreach only iterates over half the array
     const panel = myScene.spherePanel;
     panel.blockLayout = true;
-    if (panel.children.length > 0) {
+    if (panel.children?.length > 0) {
       const children = [...panel.children];
       children.forEach((child) => {
         panel.removeControl(child);
