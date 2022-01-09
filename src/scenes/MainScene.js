@@ -1,9 +1,9 @@
-import { Engine, Scene, Vector3, Matrix, TmpVectors, MeshBuilder, StandardMaterial, Color3, TransformNode } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
+import { Engine, Scene, Vector3, Matrix, TmpVectors, TransformNode } from "@babylonjs/core";
+import { GUI3DManager, SpherePanel } from "@babylonjs/gui";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
 import createCompactCard from "@/scenes/SceneHelpers/CompactCard";
+import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
 
 const myScene = {
   engine: null,
@@ -27,10 +27,10 @@ const myScene = {
     createLogo(scene);
     const ground = createGround(scene); // used for WebXR teleportation
 
-    // Defail card
-    const sampleCard = createDetailCard();
-    sampleCard.position = new Vector3(0, 0.9, 2);
-    sampleCard.rotation.x = Math.PI / 5;
+    // Detail card
+    // TODO: Replace this method or caching the detail texture. Instead, update the compact card with a query that can find the detail card texture in the scene graph
+    const detailTexture = createDetailCard(scene);
+    myScene.detailTexture = detailTexture;
 
     // Create the 3D UI manager
     const manager = new GUI3DManager(scene);
@@ -100,88 +100,6 @@ const myScene = {
     });
     panel.blockLayout = false;
   }
-};
-
-const createDetailCard = () => {
-  const cardMat = new StandardMaterial("light2");
-  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
-  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
-  const card = MeshBuilder.CreateBox("detail-card", { height: 1.1, width: 3.1, depth: 0.2 });
-  card.material = cardMat;
-
-  const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 3 });
-  plane.position.z = -0.11;
-  plane.parent = card;
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 3 * 1024, 1 * 1024);
-  myScene.detailTexture = advancedTexture;
-
-  const panel = new StackPanel("DetailPanel");
-  panel.top = 0;
-  panel.left = 512;
-  panel.height = "1024px";
-  panel.width = "2048px";
-  panel.verticalAlignment = 0;
-  advancedTexture.addControl(panel);
-
-  const image = new Image("DetailImage", "https://extendedcollection.com/wp-content/uploads/2021/05/ec_logo_02.jpg");
-  image.height = "1024px";
-  image.width = "1024px";
-  image.top = 0;
-  image.left = -1024;
-  image.paddingTop = 20;
-  image.paddingBottom = 20;
-  image.paddingLeft = 20;
-  image.paddingRight = 20;
-  advancedTexture.addControl(image);
-
-  const title = new TextBlock("DetailTitle");
-  title.text = "The Extended Collection Lab";
-  title.textWrapping = 2;
-  title.color = "white";
-  title.fontSize = 96;
-  title.fontStyle = "bold";
-  title.height = "192px";
-  title.textHorizontalAlignment = 0;
-  title.textVerticalAlignment = 2;
-  title.paddingLeft = 40;
-  title.paddingRight = 40;
-  panel.addControl(title);
-
-  const description = new TextBlock("DetailDescription");
-  description.fontFamily = "Tahoma, sans-serif";
-  description.text = "Welcome to the Extended Collection Lab. Click on the start button to begin.";
-  description.textWrapping = true;
-  description.color = "white";
-  description.fontSize = 64;
-  description.height = "640px";
-  description.textHorizontalAlignment = 0;
-  description.textVerticalAlignment = 0;
-  description.paddingTop = 40;
-  description.paddingLeft = 40;
-  description.paddingRight = 40;
-  panel.addControl(description);
-
-  const toggle = new ToggleButton("DetailToggle");
-  console.log(toggle);
-  toggle.height = "152px";
-  toggle.width = "152px";
-  toggle.left = -924;
-  toggle.background = "#718096";
-  toggle.isActive = false;
-  toggle.onPointerClickObservable.add(() => {
-    toggle.isActive = !toggle.isActive;
-    toggle.background = toggle.isActive ? "#03c4a1" : "#718096";
-  });
-  panel.addControl(toggle);
-
-  const tb = new TextBlock("FavToggleText", " ☆ ");
-  tb.color = "white";
-  tb.fontSize = 64;
-  toggle.addControl(tb);
-
-  card.scaling = new Vector3(0.4, 0.4, 0.4);
-  return card;
 };
 
 export default myScene;

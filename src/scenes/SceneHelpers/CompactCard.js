@@ -47,9 +47,9 @@ const createCompactCard = (item, detailTexture, scene) => {
     // The Advanced Dynamic Texture that that main detail card uses to draw UI
     const texture = detailTexture;
     // Get controls by name/string and update them with data from the item
-    texture.getControlByName("DetailTitle").text = item.title;
-    texture.getControlByName("DetailDescription").text = item.description;
-    texture.getControlByName("DetailImage").source = item.image;
+    texture.getControlByName("detail-title").text = item.title;
+    texture.getControlByName("detail-description").text = item.description;
+    texture.getControlByName("detail-image").source = item.image;
   });
   return returnButton;
 };
