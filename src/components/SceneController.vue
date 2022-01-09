@@ -29,7 +29,7 @@ export default {
     loadData() {
       this.loading = true;
       this.itemResponse = null;
-      return LibraryService.getItems(12, this.page)
+      return LibraryService.getItems(this.perPage, this.page)
         .then((response) => {
           this.itemResponse = response;
           this.totalItems = response.headers["x-wp-total"];

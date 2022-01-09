@@ -58,7 +58,6 @@ const createCompactCard = (item, detailTexture, scene) => {
 const createSpherePanel = () => {
   const panel = new SpherePanel("compact-panel-container");
   panel.margin = 0.05;
-  panel.position.z = -1.6;
   panel.columns = 6;
   // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
   // TODO: Check to see if there is a new way to do this in 5.0

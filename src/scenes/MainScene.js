@@ -34,8 +34,10 @@ const myScene = {
     anchor.position = new Vector3(0, 1.6, 0);
 
     const panel = createSpherePanel();
-    manager.addControl(panel);
     panel.linkToTransformNode(anchor);
+    manager.addControl(panel);
+    panel.position.y = 1.6;
+    panel.position.z = -1.6;
 
     // Stash these in the myScene object for later use
     myScene.manager = manager;
