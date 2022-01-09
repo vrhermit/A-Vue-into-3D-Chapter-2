@@ -75,12 +75,13 @@ const myScene = {
   setCompactCards: function (items) {
     populateSpherePanel(myScene.spherePanel, items);
   },
-  addStartMenu: function (startMenuSetup) {
+  addStartMenu: function (startButtonCallback) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
-    const start = createStartMenu(startMenuSetup);
-    myScene.manager.addControl(start);
-    start.linkToTransformNode = myScene.anchor;
-    start.position = new Vector3(0, 1.3, 2.2);
+    const startButton = createStartMenu(startButtonCallback);
+    myScene.manager.addControl(startButton);
+    startButton.linkToTransformNode = myScene.anchor;
+    startButton.position = new Vector3(0, 1.3, 2.2);
+    startButton.scaling = new Vector3(0.4, 0.4, 0.4);
   }
 };
 

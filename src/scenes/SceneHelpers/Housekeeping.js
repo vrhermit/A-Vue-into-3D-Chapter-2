@@ -17,9 +17,9 @@ const createCamera = (canvas, scene) => {
 
 const createEnvironment = (scene) => {
   // Customize the scene lighting and background color
-  const ambientLight1 = new HemisphericLight("light", new Vector3(5, 5, 5), scene);
+  const ambientLight1 = new HemisphericLight("light-01", new Vector3(5, 5, 5), scene);
   ambientLight1.intensity = 0.7;
-  const ambientLight2 = new HemisphericLight("light", new Vector3(-5, 5, -5), scene);
+  const ambientLight2 = new HemisphericLight("light-02", new Vector3(-5, 5, -5), scene);
   ambientLight2.intensity = 0.7;
   scene.clearColor = Color3.FromHexString(brand.light2);
 };
@@ -50,7 +50,7 @@ const makeBox = (colorName, parent, scene) => {
 };
 
 const createTitle = (scene) => {
-  const plane = MeshBuilder.CreatePlane("plane", { height: 1, width: 1 }, scene);
+  const plane = MeshBuilder.CreatePlane("scene-title-plane", { height: 1, width: 1 }, scene);
   plane.position = new Vector3(0, 3, 6);
   plane.scaling = new Vector3(2, 2, 2);
 
@@ -62,13 +62,13 @@ const createTitle = (scene) => {
 
   advancedTexture.addControl(panel);
 
-  const title = new TextBlock("title");
+  const title = new TextBlock("scene-title");
   title.text = "Extended Collection";
   title.fontSize = 96;
   title.height = "160px";
   panel.addControl(title);
 
-  const subtitle = new TextBlock("title");
+  const subtitle = new TextBlock("scene-subtitle");
   subtitle.text = "Curating the Immersive Web";
   subtitle.fontSize = 64;
   subtitle.height = "120px";
@@ -78,7 +78,7 @@ const createTitle = (scene) => {
 const createGround = (scene) => {
   // Add a ground plane to the scene. Used for WebXR teleportation
   const ground = MeshBuilder.CreateGround("ground", { height: 50, width: 60, subdivisions: 4 }, scene);
-  const groundMat = new StandardMaterial("ground-material");
+  const groundMat = new StandardMaterial("ground-material", scene);
   groundMat.alpha = 1;
   groundMat.diffuseColor = new Color3.FromHexString(brand.dark4);
   groundMat.specularColor = new Color3(0.2, 0.2, 0.2);
