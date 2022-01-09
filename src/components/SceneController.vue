@@ -1,14 +1,18 @@
 <template>
   <div>
     <button @click="populate()">Populate</button>
-    <canvas ref="bjsCanvas" style="height: calc(50vw); width: calc(90vw)" />
+    <canvas
+      id="bjsCanvas"
+      ref="bjsCanvas"
+      style="height: calc(50vw); width: calc(90vw)"
+    />
   </div>
 </template>
 
 <script>
 import LibraryService from "@/services/LibraryService.js";
 
-import { ref, onMounted } from "@vue/runtime-core";
+// import { ref, onMounted } from "@vue/runtime-core";
 import myScene from "@/scenes/MainScene.js";
 
 export default {
@@ -23,20 +27,20 @@ export default {
       perPage: 12,
     };
   },
-  setup() {
-    const bjsCanvas = ref(null);
+  // setup() {
+  //   const bjsCanvas = ref(null);
 
-    onMounted(async () => {
-      if (bjsCanvas.value) {
-        await myScene.createScene(bjsCanvas.value);
-        // myScene.createStartButton(this.populate());
-      }
-    });
+  //   onMounted(async () => {
+  //     if (bjsCanvas.value) {
+  //       await myScene.createScene(bjsCanvas.value);
+  //       // myScene.createStartButton(this.populate());
+  //     }
+  //   });
 
-    return {
-      bjsCanvas,
-    };
-  },
+  //   return {
+  //     bjsCanvas,
+  //   };
+  // },
   methods: {
     loadData() {
       this.loading = true;
@@ -78,8 +82,9 @@ export default {
   created() {
     this.loadData();
   },
-  mounted() {
-    myScene.createStartButton(this.populate);
+  async mounted() {
+    await myScene.createScene(document.getElementById("bjsCanvas"));
+    myScene.addStartMenu(this.populate);
   },
 };
 </script>

@@ -1,10 +1,12 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, Matrix, TmpVectors, MeshBuilder, Mesh, StandardMaterial, Color3, HemisphericLight, TransformNode } from "@babylonjs/core";
-import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton, Button } from "@babylonjs/gui";
+import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, GUI3DManager, SpherePanel, ToggleButton } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
 const myScene = {
   engine: null,
   scene: null,
+  manager: null,
+  anchor: null,
 
   spherePanel: null,
   detailTexture: null,
@@ -31,6 +33,8 @@ const myScene = {
     const manager = new GUI3DManager(scene);
     const anchor = new TransformNode("");
     anchor.position = new Vector3(0, 1.6, 0);
+    myScene.manager = manager;
+    myScene.anchor = anchor;
 
     var panel = new SpherePanel("spherePanel");
     myScene.spherePanel = panel;
@@ -65,25 +69,13 @@ const myScene = {
     });
   },
 
-  // Call this from Vue to pass data into the scene
+  // Call these functions from Vue to pass in the data or setup the scene
   setCompactCards: function (items) {
     populateSpherePanel(myScene.spherePanel, items);
   },
-  createStartButton: function (callback) {
-    // GUI
-    var advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-    var button1 = Button.CreateSimpleButton("but1", "Click Me");
-    button1.width = "150px";
-    button1.height = "40px";
-    button1.color = "white";
-    button1.cornerRadius = 20;
-    button1.background = "green";
-    button1.onPointerUpObservable.add(function () {
-      // alert("you did it!");
-      callback();
-    });
-    advancedTexture.addControl(button1);
+  addStartMenu: function (startMenuSetup) {
+    // Takes in a function from Vue to setup the scene when the start button is clicked
+    createStartMenu(startMenuSetup);
   }
 };
 
@@ -101,6 +93,40 @@ const populateSpherePanel = (panel, items) => {
     panel.addControl(createCompactCard(item));
   });
   panel.blockLayout = false;
+};
+
+const createStartMenu = (startMenuSetup) => {
+  const cardMat = new StandardMaterial("light2");
+  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
+  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
+  const card = MeshBuilder.CreateBox("detail-card", { height: 0.8, width: 1.2, depth: 0.2 });
+  card.material = cardMat;
+
+  const plane = MeshBuilder.CreatePlane("plane", { height: 0.8, width: 1.2 });
+  plane.position.z = -0.11;
+  plane.parent = card;
+
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 1.2 * 1024, 0.8 * 1024);
+
+  const title = new TextBlock("StartText");
+  title.text = "START";
+  title.color = "white";
+  title.fontSize = 96;
+  title.fontStyle = "bold";
+  title.height = "192px";
+  advancedTexture.addControl(title);
+
+  card.scaling = new Vector3(0.4, 0.4, 0.4);
+  const returnButton = new MeshButton3D(card, `start-button`);
+  myScene.manager.addControl(returnButton);
+  returnButton.linkToTransformNode = myScene.anchor;
+  returnButton.onPointerDownObservable.add(() => {
+    startMenuSetup();
+    returnButton.dispose();
+  });
+  returnButton.position = new Vector3(0, 1.3, 2.2);
+
+  return returnButton;
 };
 
 const createCompactCard = (item) => {
@@ -187,7 +213,7 @@ const createDetailCard = () => {
   advancedTexture.addControl(image);
 
   const title = new TextBlock("DetailTitle");
-  title.text = "Title of a Library Item";
+  title.text = "The Extended Collection Lab";
   title.textWrapping = 2;
   title.color = "white";
   title.fontSize = 96;
@@ -201,8 +227,7 @@ const createDetailCard = () => {
 
   const description = new TextBlock("DetailDescription");
   description.fontFamily = "Tahoma, sans-serif";
-  description.text =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  description.text = "Welcome to the Extended Collection Lab. Click on the start button to begin.";
   description.textWrapping = true;
   description.color = "white";
   description.fontSize = 64;
