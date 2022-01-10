@@ -1,17 +1,14 @@
 <template>
-  <div>
-    <button @click="populate()">Populate</button>
-    <canvas
-      id="bjsCanvas"
-      ref="bjsCanvas"
-      style="height: calc(50vw); width: calc(90vw)"
-    />
-  </div>
+  <canvas
+    id="bjsCanvas"
+    ref="bjsCanvas"
+    style="height: calc(50vw); width: calc(100vw)"
+  />
 </template>
 
 <script>
 import LibraryService from "@/services/LibraryService.js";
-import myScene from "@/scenes/MainScene.js";
+import SceneWrapper from "@/scenes/SceneWrapper.js";
 
 export default {
   name: "BabylonScene",
@@ -60,15 +57,15 @@ export default {
           image: item.featured_image_src_large[0],
         };
       });
-      myScene.setCompactCards(items);
+      SceneWrapper.sendItems(items);
     },
   },
   created() {
     this.loadData();
   },
   async mounted() {
-    await myScene.createScene(document.getElementById("bjsCanvas"));
-    myScene.addStartMenu(this.populate);
+    await SceneWrapper.createScene(document.getElementById("bjsCanvas"));
+    SceneWrapper.sendStartButton(this.populate);
   },
 };
 </script>

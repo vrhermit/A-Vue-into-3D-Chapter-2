@@ -2,10 +2,10 @@ import { Engine, Scene, Vector3, TransformNode } from "@babylonjs/core";
 import { GUI3DManager } from "@babylonjs/gui";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
-import { createCompactCard, createSpherePanel } from "@/scenes/SceneHelpers/CompactCard";
 import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
+import { createCompactCard, createSpherePanel } from "@/scenes/SceneHelpers/CompactCard";
 
-const myScene = {
+const SceneWrapper = {
   engine: null,
   scene: null,
   manager: null,
@@ -17,8 +17,8 @@ const myScene = {
     const engine = new Engine(canvas);
     const scene = new Scene(engine);
 
-    myScene.engine = engine;
-    myScene.scene = scene;
+    SceneWrapper.engine = engine;
+    SceneWrapper.scene = scene;
     createEnvironment(scene);
     createCamera(canvas, scene);
     createTitle(scene);
@@ -39,10 +39,10 @@ const myScene = {
     panel.position.y = 1.6;
     panel.position.z = -1.6;
 
-    // Stash these in the myScene object for later use
-    myScene.manager = manager;
-    myScene.anchor = anchor;
-    myScene.spherePanel = panel;
+    // Stash these in the SceneWrapper object for later use
+    SceneWrapper.manager = manager;
+    SceneWrapper.anchor = anchor;
+    SceneWrapper.spherePanel = panel;
 
     // WebXRDefaultExperience
     const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -58,19 +58,20 @@ const myScene = {
 
   // --- Call these functions from Vue to pass in the data or setup the scene ---
 
-  addStartMenu: function (startButtonCallback) {
+  sendStartButton: function (startButtonCallback) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
     const startButton = createStartMenu(startButtonCallback);
-    myScene.manager.addControl(startButton);
-    startButton.linkToTransformNode = myScene.anchor;
+    SceneWrapper.manager.addControl(startButton);
+    startButton.linkToTransformNode = SceneWrapper.anchor;
     startButton.position = new Vector3(0, 1.3, 2.2);
     startButton.scaling = new Vector3(0.4, 0.4, 0.4);
   },
 
-  setCompactCards: function (items) {
+  sendItems: function (items) {
+    // Check the spehre panel for any existing cards and remove them, then create new ones
     // Have to copy the array without reference to the original using the spread operator
     // Without doing this, foreach only iterates over half the array
-    const panel = myScene.spherePanel;
+    const panel = SceneWrapper.spherePanel;
     panel.blockLayout = true;
     if (panel.children?.length > 0) {
       const children = [...panel.children];
@@ -79,11 +80,11 @@ const myScene = {
       });
     }
     items.forEach((item) => {
-      const card = createCompactCard(item, myScene.detailTexture, myScene.scene);
+      const card = createCompactCard(item, SceneWrapper.detailTexture, SceneWrapper.scene);
       panel.addControl(card);
     });
     panel.blockLayout = false;
   }
 };
 
-export default myScene;
+export default SceneWrapper;
