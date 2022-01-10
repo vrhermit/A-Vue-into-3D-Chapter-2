@@ -8,7 +8,6 @@
       Please check my website for the latest posts in this series.
       <a href="https://radicalappdev.com">radicalappdev.com</a>
     </p>
-
     <hr />
     <br />
 
