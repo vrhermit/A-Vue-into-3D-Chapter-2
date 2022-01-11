@@ -34,7 +34,10 @@ export default {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => (this.loading = false));
+        .finally(() => {
+          this.loading = false;
+          this.populate();
+        });
     },
     loadPrevious() {
       if (this.page > 1) {
@@ -49,7 +52,7 @@ export default {
       }
     },
     populate() {
-      const items = this.itemResponse.data.map((item) => {
+      const items = this.itemResponse.data?.map((item) => {
         return {
           id: item.id,
           title: item.title.rendered,
@@ -65,7 +68,9 @@ export default {
   },
   async mounted() {
     await SceneWrapper.createScene(document.getElementById("bjsCanvas"));
-    SceneWrapper.sendStartButton(this.populate);
+    // SceneWrapper.sendStartButton(this.populate);
+    SceneWrapper.sendControlPanelButton("<", this.loadPrevious);
+    SceneWrapper.sendControlPanelButton(">", this.loadNext);
   },
 };
 </script>

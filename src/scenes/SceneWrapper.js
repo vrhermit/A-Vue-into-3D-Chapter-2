@@ -4,6 +4,7 @@ import { createCamera, createEnvironment, createLogo, createTitle, createGround 
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
 import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
 import { createCompactCard, createSpherePanel } from "@/scenes/SceneHelpers/CompactCard";
+import { createControlPanelButton, createStackPanel } from "@/scenes/SceneHelpers/ControlPanel";
 
 const SceneWrapper = {
   engine: null,
@@ -11,6 +12,7 @@ const SceneWrapper = {
   manager: null,
   anchor: null,
   spherePanel: null,
+  controlPanel: null,
 
   createScene: async (canvas) => {
     // Create and customize the scene
@@ -39,10 +41,17 @@ const SceneWrapper = {
     panel.position.y = 1.6;
     panel.position.z = -1.6;
 
+    const controlPanel = createStackPanel();
+    controlPanel.linkToTransformNode(anchor);
+    manager.addControl(controlPanel);
+    controlPanel.position = new Vector3(0, 1.2, 2.1);
+    controlPanel.scaling = new Vector3(0.1, 0.1, 0.1);
+
     // Stash these in the SceneWrapper object for later use
     SceneWrapper.manager = manager;
     SceneWrapper.anchor = anchor;
     SceneWrapper.spherePanel = panel;
+    SceneWrapper.controlPanel = controlPanel;
 
     // WebXRDefaultExperience
     const xrDefault = scene.createDefaultXRExperienceAsync({
@@ -67,6 +76,18 @@ const SceneWrapper = {
     startButton.scaling = new Vector3(0.4, 0.4, 0.4);
   },
 
+  sendControlPanelButton: function (label, callbackAction) {
+    // Takes in a function from Vue to setup the scene when the start button is clicked
+    const button = createControlPanelButton(label, callbackAction);
+    // button.scaling = new Vector3(0.4, 0.4, 0.4);
+
+    SceneWrapper.controlPanel.addControl(button);
+    // SceneWrapper.manager.addControl(startButton);
+    // startButton.linkToTransformNode = SceneWrapper.anchor;
+    // startButton.position = new Vector3(0, 1.3, 2.2);
+    // startButton.scaling = new Vector3(0.4, 0.4, 0.4);
+  },
+
   sendItems: function (items) {
     // Check the spehre panel for any existing cards and remove them, then create new ones
     // Have to copy the array without reference to the original using the spread operator
@@ -77,6 +98,7 @@ const SceneWrapper = {
       const children = [...panel.children];
       children.forEach((child) => {
         panel.removeControl(child);
+        child.dispose();
       });
     }
     items.forEach((item) => {

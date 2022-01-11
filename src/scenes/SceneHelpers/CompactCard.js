@@ -2,7 +2,7 @@ import { MeshBuilder, StandardMaterial, Color3, Vector3, Matrix, TmpVectors } fr
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, SpherePanel } from "@babylonjs/gui";
 import { brand } from "@/helpers/brand";
 
-const createCompactCard = (item, detailTexture, scene) => {
+const createCompactCard = (item, scene) => {
   // TODO: No need to create a material for every card.
   const cardMat = new StandardMaterial("compact-card-mat", scene);
   cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
@@ -25,7 +25,7 @@ const createCompactCard = (item, detailTexture, scene) => {
   image.paddingTop = 40;
   image.paddingLeft = 40;
   image.paddingRight = 40;
-  panel.addControl(image);
+  // panel.addControl(image);
 
   const title = new TextBlock("compact-title");
   title.text = item.title;
