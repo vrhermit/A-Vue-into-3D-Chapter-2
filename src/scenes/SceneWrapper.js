@@ -3,7 +3,7 @@ import { GUI3DManager } from "@babylonjs/gui";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
 import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
-import { createCompactCard, createSpherePanel } from "@/scenes/SceneHelpers/CompactCard";
+import { createSpherePanel, populateCompactCard } from "@/scenes/SceneHelpers/CompactCard";
 import { createControlPanelButton, createStackPanel } from "@/scenes/SceneHelpers/ControlPanel";
 
 const SceneWrapper = {
@@ -35,12 +35,11 @@ const SceneWrapper = {
     const anchor = new TransformNode("");
     anchor.position = new Vector3(0, 1.6, 0);
 
-    const panel = createSpherePanel();
-    panel.linkToTransformNode(anchor);
-    manager.addControl(panel);
-    panel.position.y = 1.6;
-    panel.position.z = -1.6;
+    // Sphere panel to hold the compact cards
+    const panel = createSpherePanel(manager, anchor);
+    panel.position = new Vector3(0, 0.1, -1.6);
 
+    // Stack panek to hold the control buttons
     const controlPanel = createStackPanel();
     controlPanel.linkToTransformNode(anchor);
     manager.addControl(controlPanel);
@@ -79,33 +78,13 @@ const SceneWrapper = {
   sendControlPanelButton: function (label, callbackAction) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
     const button = createControlPanelButton(label, callbackAction);
-    // button.scaling = new Vector3(0.4, 0.4, 0.4);
 
     SceneWrapper.controlPanel.addControl(button);
-    // SceneWrapper.manager.addControl(startButton);
-    // startButton.linkToTransformNode = SceneWrapper.anchor;
-    // startButton.position = new Vector3(0, 1.3, 2.2);
-    // startButton.scaling = new Vector3(0.4, 0.4, 0.4);
   },
 
-  sendItems: function (items) {
-    // Check the spehre panel for any existing cards and remove them, then create new ones
-    // Have to copy the array without reference to the original using the spread operator
-    // Without doing this, foreach only iterates over half the array
-    const panel = SceneWrapper.spherePanel;
-    panel.blockLayout = true;
-    if (panel.children?.length > 0) {
-      const children = [...panel.children];
-      children.forEach((child) => {
-        panel.removeControl(child);
-        child.dispose();
-      });
-    }
-    items.forEach((item) => {
-      const card = createCompactCard(item, SceneWrapper.detailTexture, SceneWrapper.scene);
-      panel.addControl(card);
-    });
-    panel.blockLayout = false;
+  populateCompactCards: function (items) {
+    // Grap the sphere panel and and the scene and pass them on with the items
+    populateCompactCard(items, SceneWrapper.spherePanel, SceneWrapper.scene);
   }
 };
 

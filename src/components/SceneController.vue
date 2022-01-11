@@ -60,7 +60,7 @@ export default {
           image: item.featured_image_src_large[0],
         };
       });
-      SceneWrapper.sendItems(items);
+      SceneWrapper.populateCompactCards(items);
     },
   },
   created() {

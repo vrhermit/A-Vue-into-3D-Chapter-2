@@ -144,7 +144,7 @@
               "dash": "draw",
               "scale": 1
             },
-            "label": "sendItems()",
+            "label": "populateCompactCards()",
             "labelPoint": [0.5, 0.5]
           },
           "85fb9ecf-e7a4-4669-2b46-680765d1934b": {
