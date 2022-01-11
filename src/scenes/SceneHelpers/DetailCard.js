@@ -1,11 +1,7 @@
-import { Vector3, MeshBuilder, StandardMaterial, Color3 } from "@babylonjs/core";
+import { Vector3, MeshBuilder } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, ToggleButton } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
 
-const createDetailCard = (scene) => {
-  const cardMat = new StandardMaterial("detail-card-mat", scene);
-  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
-  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
+const createDetailCard = (scene, cardMat) => {
   const card = MeshBuilder.CreateBox("detail-card", { height: 1.1, width: 3.1, depth: 0.2 });
   card.material = cardMat;
 
@@ -50,7 +46,7 @@ const createDetailCard = (scene) => {
 
   const description = new TextBlock("detail-description");
   description.fontFamily = "Tahoma, sans-serif";
-  description.text = "Welcome to the Extended Collection Lab. Click on the start button to begin.";
+  description.text = "Welcome to the Extended Collection Lab. Select a library item to learn more about it.";
   description.textWrapping = true;
   description.color = "white";
   description.fontSize = 64;
@@ -79,7 +75,7 @@ const createDetailCard = (scene) => {
   tb.fontSize = 64;
   toggle.addControl(tb);
 
-  card.scaling = new Vector3(0.4, 0.4, 0.4);
+  card.scaling = new Vector3(0.3, 0.3, 0.3);
   card.position = new Vector3(0, 0.9, 2);
   card.rotation.x = Math.PI / 5;
 

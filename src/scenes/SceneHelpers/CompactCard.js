@@ -1,12 +1,7 @@
-import { MeshBuilder, StandardMaterial, Color3, Vector3, Matrix, TmpVectors } from "@babylonjs/core";
+import { MeshBuilder, Vector3, Matrix, TmpVectors } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, SpherePanel } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
 
-const createCompactCard = (index) => {
-  // TODO: No need to create a material for every card.
-  const cardMat = new StandardMaterial("compact-card-mat");
-  cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
-  cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
+const createCompactCard = (index, cardMat) => {
   const card = MeshBuilder.CreateBox(`compact-card-${index}`, { height: 2.6, width: 2, depth: 0.2 });
   card.material = cardMat;
 
@@ -42,7 +37,7 @@ const createCompactCard = (index) => {
   title.paddingRight = 40;
   panel.addControl(title);
 
-  card.scaling = new Vector3(0.25, 0.25, 0.25);
+  card.scaling = new Vector3(0.2, 0.2, 0.2);
   const button3D = new MeshButton3D(card, `compact-card-button-${index}`);
   return button3D;
 };
@@ -71,13 +66,13 @@ const populateCompactCard = (items, panel, scene) => {
   }
 };
 
-const createSpherePanel = (manager, anchor) => {
+const createSpherePanel = (manager, anchor, cardMat) => {
   const panel = new SpherePanel("compact-panel-container");
   manager.addControl(panel);
   panel.linkToTransformNode(anchor);
-  panel.margin = 0.05;
+  panel.margin = 0.025;
   panel.columns = 6;
-  panel.radius = 5;
+  panel.radius = 2.5;
 
   // Adapted from here: https://github.com/BabylonJS/Babylon.js/blob/master/gui/src/3D/controls/spherePanel.ts#L60-L69
   // TODO: Check to see if there is a new way to do this in 5.0
@@ -94,7 +89,7 @@ const createSpherePanel = (manager, anchor) => {
 
   panel.blockLayout = true;
   for (let i = 0; i < 12; i++) {
-    const card = createCompactCard(i);
+    const card = createCompactCard(i, cardMat);
     panel.addControl(card);
   }
   panel.blockLayout = false;

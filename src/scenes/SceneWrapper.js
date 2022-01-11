@@ -1,10 +1,11 @@
-import { Engine, Scene, Vector3, TransformNode } from "@babylonjs/core";
+import { Engine, Scene, Vector3, TransformNode, StandardMaterial, Color3 } from "@babylonjs/core";
 import { GUI3DManager } from "@babylonjs/gui";
 import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
 import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
 import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
 import { createSpherePanel, populateCompactCard } from "@/scenes/SceneHelpers/CompactCard";
-import { createControlPanelButton, createStackPanel } from "@/scenes/SceneHelpers/ControlPanel";
+import { createBackdrop, createControlPanelButton, createStackPanel } from "@/scenes/SceneHelpers/ControlPanel";
+import { brand } from "@/helpers/brand";
 
 const SceneWrapper = {
   engine: null,
@@ -25,10 +26,14 @@ const SceneWrapper = {
     createCamera(canvas, scene);
     createTitle(scene);
     createLogo(scene);
+    createBackdrop();
     const ground = createGround(scene); // used for WebXR teleportation
+    const cardMat = new StandardMaterial("compact-card-mat");
+    cardMat.diffuseColor = new Color3.FromHexString(brand.dark3);
+    cardMat.specularColor = new Color3(0.3, 0.3, 0.3);
 
     // Detail card
-    createDetailCard(scene);
+    createDetailCard(scene, cardMat);
 
     // Create the 3D GUI
     const manager = new GUI3DManager(scene);
@@ -36,14 +41,14 @@ const SceneWrapper = {
     anchor.position = new Vector3(0, 1.6, 0);
 
     // Sphere panel to hold the compact cards
-    const panel = createSpherePanel(manager, anchor);
-    panel.position = new Vector3(0, 0.1, -1.6);
+    const panel = createSpherePanel(manager, anchor, cardMat);
+    panel.position = new Vector3(0, 0.1, 0.5);
 
     // Stack panek to hold the control buttons
     const controlPanel = createStackPanel();
     controlPanel.linkToTransformNode(anchor);
     manager.addControl(controlPanel);
-    controlPanel.position = new Vector3(0, 1.2, 2.1);
+    controlPanel.position = new Vector3(0, 1.1, 2.1);
     controlPanel.scaling = new Vector3(0.1, 0.1, 0.1);
 
     // Stash these in the SceneWrapper object for later use
@@ -77,7 +82,7 @@ const SceneWrapper = {
 
   sendControlPanelButton: function (label, callbackAction) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
-    const button = createControlPanelButton(label, callbackAction);
+    const button = createControlPanelButton(label, callbackAction, SceneWrapper.scene);
 
     SceneWrapper.controlPanel.addControl(button);
   },

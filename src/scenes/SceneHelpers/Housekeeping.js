@@ -29,9 +29,9 @@ const createEnvironment = (scene) => {
 const createLogo = (scene) => {
   // Placeholder logo - need to put something together in Blender
   const group = new Mesh("logo-group");
-  group.position = new Vector3(-1.5, 3.5, 6);
+  group.position = new Vector3(-1, 2.5, 3);
   group.rotation = new Vector3(0, 2, 0);
-  group.scaling = new Vector3(0.5, 0.5, 0.5);
+  group.scaling = new Vector3(0.3, 0.3, 0.3);
   makeBox("light2", group, scene).position = new Vector3(0, 0, 0);
   makeBox("pink", group, scene).position = new Vector3(0.5, 0, 0);
   makeBox("blue", group, scene).position = new Vector3(0, 0.5, 0);
@@ -51,8 +51,8 @@ const makeBox = (colorName, parent, scene) => {
 
 const createTitle = (scene) => {
   const plane = MeshBuilder.CreatePlane("scene-title-plane", { height: 1, width: 1 }, scene);
-  plane.position = new Vector3(0, 3, 6);
-  plane.scaling = new Vector3(2, 2, 2);
+  plane.position = new Vector3(0, 2, 3);
+  plane.scaling = new Vector3(1.5, 1.5, 1.5);
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 

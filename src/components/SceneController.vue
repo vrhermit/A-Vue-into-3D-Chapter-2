@@ -62,15 +62,23 @@ export default {
       });
       SceneWrapper.populateCompactCards(items);
     },
+    loadAPI() {
+      console.log("loadAPI");
+    },
+    loadFavorite() {
+      console.log("loadFavorite");
+    },
   },
   created() {
     this.loadData();
   },
   async mounted() {
     await SceneWrapper.createScene(document.getElementById("bjsCanvas"));
-    // SceneWrapper.sendStartButton(this.populate);
     SceneWrapper.sendControlPanelButton("<", this.loadPrevious);
     SceneWrapper.sendControlPanelButton(">", this.loadNext);
+    SceneWrapper.sendControlPanelButton("", () => {});
+    SceneWrapper.sendControlPanelButton("API", this.loadAPI);
+    SceneWrapper.sendControlPanelButton("FAV", this.loadFavorite);
   },
 };
 </script>
