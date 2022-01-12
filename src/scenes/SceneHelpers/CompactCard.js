@@ -42,12 +42,13 @@ const createCompactCard = (index, cardMat) => {
   return button3D;
 };
 
-const populateCompactCard = (items, panel, scene) => {
+const populateCompactCard = (items, toggleCallback, panel, scene) => {
   for (let i = 0; i < 12; i++) {
     const texture = scene.getTextureByName(`compact-card-texture-${i}`);
     const button3D = panel.children[i];
     const item = items[i];
     if (item) {
+      console.log("item fav", item.isFavorite);
       button3D.isVisible = true;
       texture.getControlByName("compact-title").text = item.title;
       texture.getControlByName("compact-image").source = item.image;
@@ -59,6 +60,16 @@ const populateCompactCard = (items, panel, scene) => {
         texture.getControlByName("detail-title").text = item.title;
         texture.getControlByName("detail-description").text = item.description;
         texture.getControlByName("detail-image").source = item.image;
+        const toggle = texture.getControlByName("detail-fav-toggle");
+        toggle.isVisible = true;
+        toggle.isActive = item.isFavorite;
+        toggle.background = item.isFavorite ? "#03c4a1" : "#718096";
+        toggle.onPointerClickObservable.clear();
+        toggle.onPointerClickObservable.add(() => {
+          toggle.isActive = !toggle.isActive;
+          toggle.background = toggle.isActive ? "#03c4a1" : "#718096";
+          toggleCallback(item, toggle.isActive);
+        });
       });
     } else {
       button3D.isVisible = false;

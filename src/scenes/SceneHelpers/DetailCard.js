@@ -64,10 +64,7 @@ const createDetailCard = (scene, cardMat) => {
   toggle.left = -924;
   toggle.background = "#718096";
   toggle.isActive = false;
-  toggle.onPointerClickObservable.add(() => {
-    toggle.isActive = !toggle.isActive;
-    toggle.background = toggle.isActive ? "#03c4a1" : "#718096";
-  });
+  toggle.isVisible = false;
   panel.addControl(toggle);
 
   const tb = new TextBlock("detail-fav-text", " ☆ ");

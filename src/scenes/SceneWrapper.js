@@ -87,9 +87,9 @@ const SceneWrapper = {
     SceneWrapper.controlPanel.addControl(button);
   },
 
-  populateCompactCards: function (items) {
+  populateCompactCards: function (items, toggleCallback) {
     // Grap the sphere panel and and the scene and pass them on with the items
-    populateCompactCard(items, SceneWrapper.spherePanel, SceneWrapper.scene);
+    populateCompactCard(items, toggleCallback, SceneWrapper.spherePanel, SceneWrapper.scene);
   }
 };
 

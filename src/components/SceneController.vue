@@ -53,14 +53,22 @@ export default {
     },
     populate() {
       const items = this.itemResponse.data?.map((item) => {
+        var fav = false;
+        if (localStorage[this.storageKey(item.id)]) {
+          const stored = JSON.parse(localStorage[this.storageKey(item.id)]);
+          console.log(stored);
+          fav = stored?.isFavorite == true ? stored.isFavorite : false;
+          console.log(fav);
+        }
         return {
           id: item.id,
           title: item.title.rendered,
           description: item.acf.acf_library_description,
           image: item.featured_image_src_large[0],
+          isFavorite: fav,
         };
       });
-      SceneWrapper.populateCompactCards(items);
+      SceneWrapper.populateCompactCards(items, this.toggleFavorite);
     },
     loadAPI() {
       console.log("loadAPI");
@@ -68,7 +76,18 @@ export default {
     loadFavorite() {
       console.log("loadFavorite");
     },
+    toggleFavorite(item, isFavorite) {
+      console.log("toggleFavorite", item.id, isFavorite);
+      let newItem = item;
+      newItem["isFavorite"] = isFavorite;
+      localStorage[this.storageKey(item.id)] = JSON.stringify(newItem);
+      console.log(localStorage[this.storageKey(item.id)]);
+    },
+    storageKey(id) {
+      return `item-${id}`;
+    },
   },
+  computed: {},
   created() {
     this.loadData();
   },
