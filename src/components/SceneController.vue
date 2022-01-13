@@ -4,6 +4,20 @@
     ref="bjsCanvas"
     style="height: calc(50vw); width: calc(100vw)"
   />
+  <div>
+    <button @click="exportFavData()">Export Favorites (Text File)</button>
+
+    <button @click="copyFavData()">Get Favorites as Text</button>
+  </div>
+  <textarea
+    rows="24"
+    cols="100"
+    readonly
+    v-on:focus="$event.target.select()"
+    ref="clone"
+    :value="favText"
+    type="textarea"
+  />
 </template>
 
 <script>
@@ -22,6 +36,7 @@ export default {
       perPage: 12,
       dataSource: "api",
       favorites: [],
+      favText: "Click 'Get Favorites as Text'",
     };
   },
   methods: {
@@ -126,6 +141,50 @@ export default {
     },
     storageKey(id) {
       return `item-${id}`;
+    },
+
+    prepareExportData() {
+      const storage = { ...localStorage };
+      const keys = Object.keys(storage);
+      let loadedFavorites = [];
+      for (let key of keys) {
+        if (key.toString().substring(0, 5) === "item-") {
+          const item = JSON.parse(localStorage[key]);
+          if (item.isFavorite) {
+            loadedFavorites.push(item);
+          }
+        }
+      }
+      console.log(loadedFavorites);
+      const exportItems = loadedFavorites
+        ?.map((item) => {
+          return `${item.title}\n     ${item.link}`;
+        })
+        .join("\n\n");
+      return exportItems;
+    },
+
+    async copyFavData() {
+      this.favText = await this.prepareExportData();
+      // this.$refs.clone.focus();
+      // document.execCommand("copy");
+      // this.clipboard.writeText(this.prepareExportData());
+    },
+
+    // A stub to export favorites from LocalStorage to a JSON file.
+    exportFavData() {
+      const exportItems = this.prepareExportData();
+
+      let exportEl = document.createElement("a");
+      exportEl.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURIComponent(exportItems)
+      );
+      exportEl.style.display = "none";
+      exportEl.setAttribute("download", "ec-labs-favorites.txt");
+      document.body.appendChild(exportEl);
+      exportEl.click();
+      document.body.removeChild(exportEl);
     },
   },
   computed: {},
