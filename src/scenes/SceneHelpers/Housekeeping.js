@@ -10,7 +10,7 @@ const createCamera = (canvas, scene) => {
   camera.upperBetaLimit = Math.PI / 1.5;
   camera.lowerRadiusLimit = 2;
   camera.upperRadiusLimit = 50;
-  camera.setPosition(new Vector3(0, 1.5, 0));
+  camera.setPosition(new Vector3(0, 1.5, -2));
   camera.setTarget(new Vector3(0, 2, 4));
   camera.attachControl(canvas, true);
 };
