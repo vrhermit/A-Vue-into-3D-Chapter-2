@@ -2,14 +2,14 @@ import { MeshBuilder, Vector3, Matrix, TmpVectors } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock, Image, MeshButton3D, SpherePanel } from "@babylonjs/gui";
 
 const createCompactCard = (index, cardMat) => {
-  const card = MeshBuilder.CreateBox(`compact-card-${index}`, { height: 2.6, width: 2, depth: 0.2 });
+  const card = MeshBuilder.CreateBox(`compact-card-${index}`, { height: 2.8, width: 2, depth: 0.2 });
   card.material = cardMat;
 
-  const plane = MeshBuilder.CreatePlane("compact-plane", { height: 2.6, width: 2 });
+  const plane = MeshBuilder.CreatePlane("compact-plane", { height: 2.8, width: 2 });
   plane.position.z = -0.11;
   plane.parent = card;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.6 * 1024);
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane, 2 * 1024, 2.8 * 1024);
   advancedTexture.name = `compact-card-texture-${index}`;
   const panel = new StackPanel();
   panel.verticalAlignment = 0;
@@ -37,6 +37,22 @@ const createCompactCard = (index, cardMat) => {
   title.paddingRight = 40;
   panel.addControl(title);
 
+  const fav = new TextBlock("compact-fav");
+  fav.text = " ★ ";
+  fav.color = "white";
+  fav.fontSize = 128;
+  fav.fontStyle = "bold";
+  fav.height = "256px";
+  fav.textHorizontalAlignment = 2;
+  fav.textVerticalAlignment = 0;
+  fav.isVisible = false;
+  panel.addControl(fav);
+
+  // const tb = new TextBlock(`compact-fav-${index}`, " ☆ ");
+  // tb.color = "white";
+  // tb.fontSize = 64;
+  // panel.addControl(tb);
+
   card.scaling = new Vector3(0.2, 0.2, 0.2);
   const button3D = new MeshButton3D(card, `compact-card-button-${index}`);
   return button3D;
@@ -44,14 +60,19 @@ const createCompactCard = (index, cardMat) => {
 
 const populateCompactCard = (items, toggleCallback, panel, scene) => {
   for (let i = 0; i < 12; i++) {
-    const texture = scene.getTextureByName(`compact-card-texture-${i}`);
+    const compactTexture = scene.getTextureByName(`compact-card-texture-${i}`);
     const button3D = panel.children[i];
     const item = items[i];
     if (item) {
-      console.log("item fav", item.isFavorite);
       button3D.isVisible = true;
-      texture.getControlByName("compact-title").text = item.title;
-      texture.getControlByName("compact-image").source = item.image;
+      compactTexture.getControlByName("compact-title").text = item.title;
+      compactTexture.getControlByName("compact-image").source = item.image;
+      // Save this as a function that we can pass into the detail card button
+      const toggleFavCompact = (value) => {
+        compactTexture.getControlByName("compact-fav").isVisible = value;
+      };
+      toggleFavCompact(item.isFavorite);
+
       button3D.onPointerDownObservable.add(() => {
         // The Advanced Dynamic Texture that that main detail card uses to draw UI
         const texture = scene.getTextureByName("detail-texture");
@@ -69,6 +90,7 @@ const populateCompactCard = (items, toggleCallback, panel, scene) => {
           toggle.isActive = !toggle.isActive;
           toggle.background = toggle.isActive ? "#03c4a1" : "#718096";
           toggleCallback(item, toggle.isActive);
+          toggleFavCompact(toggle.isActive);
         });
       });
     } else {

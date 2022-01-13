@@ -53,17 +53,17 @@ export default {
     },
     populate() {
       const items = this.itemResponse.data?.map((item) => {
-        var fav = false;
+        let fav = false;
         if (localStorage[this.storageKey(item.id)]) {
           const stored = JSON.parse(localStorage[this.storageKey(item.id)]);
-          console.log(stored);
           fav = stored?.isFavorite == true ? stored.isFavorite : false;
-          console.log(fav);
         }
+
         return {
           id: item.id,
           title: item.title.rendered,
           description: item.acf.acf_library_description,
+          link: item.acf.acf_library_url,
           image: item.featured_image_src_large[0],
           isFavorite: fav,
         };
@@ -77,7 +77,6 @@ export default {
       console.log("loadFavorite");
     },
     toggleFavorite(item, isFavorite) {
-      console.log("toggleFavorite", item.id, isFavorite);
       let newItem = item;
       newItem["isFavorite"] = isFavorite;
       localStorage[this.storageKey(item.id)] = JSON.stringify(newItem);

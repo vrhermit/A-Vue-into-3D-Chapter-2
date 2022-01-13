@@ -67,7 +67,7 @@ const createDetailCard = (scene, cardMat) => {
   toggle.isVisible = false;
   panel.addControl(toggle);
 
-  const tb = new TextBlock("detail-fav-text", " ☆ ");
+  const tb = new TextBlock("detail-fav-text", " ★ ");
   tb.color = "white";
   tb.fontSize = 64;
   toggle.addControl(tb);
