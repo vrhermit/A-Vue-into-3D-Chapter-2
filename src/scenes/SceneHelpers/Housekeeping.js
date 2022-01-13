@@ -1,6 +1,6 @@
 import { ArcRotateCamera, HemisphericLight, Vector3, MeshBuilder, Mesh, StandardMaterial, Color3 } from "@babylonjs/core";
 import { AdvancedDynamicTexture, StackPanel, TextBlock } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
+import { brand } from "../../helpers/brand";
 
 const createCamera = (canvas, scene) => {
   // Add an ArcRotateCamera to the scene and attach it to the canvas

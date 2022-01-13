@@ -1,11 +1,11 @@
 import { Engine, Scene, Vector3, TransformNode, StandardMaterial, Color3 } from "@babylonjs/core";
 import { GUI3DManager } from "@babylonjs/gui";
-import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "@/scenes/SceneHelpers/Housekeeping";
-import createStartMenu from "@/scenes/SceneHelpers/StartMenu";
-import createDetailCard from "@/scenes/SceneHelpers/DetailCard";
-import { createSpherePanel, populateCompactCard } from "@/scenes/SceneHelpers/CompactCard";
-import { createBackdrop, createControlPanelButton, createStackPanel } from "@/scenes/SceneHelpers/ControlPanel";
-import { brand } from "@/helpers/brand";
+import { createCamera, createEnvironment, createLogo, createTitle, createGround } from "./scenehelpers/Housekeeping";
+import createStartMenu from "./scenehelpers/StartMenu";
+import createDetailCard from "./scenehelpers/DetailCard";
+import { createSpherePanel, populateCompactCard } from "./scenehelpers/CompactCard";
+import { createBackdrop, createControlPanelButton, createStackPanel } from "./scenehelpers/ControlPanel";
+import { brand } from "../helpers/brand";
 
 const SceneWrapper = {
   engine: null,
@@ -83,7 +83,6 @@ const SceneWrapper = {
   sendControlPanelButton: function (label, callbackAction) {
     // Takes in a function from Vue to setup the scene when the start button is clicked
     const button = createControlPanelButton(label, callbackAction, SceneWrapper.scene);
-
     SceneWrapper.controlPanel.addControl(button);
   },
 

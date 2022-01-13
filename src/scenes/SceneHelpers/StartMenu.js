@@ -1,6 +1,6 @@
 import { MeshBuilder, StandardMaterial, Color3 } from "@babylonjs/core";
 import { AdvancedDynamicTexture, TextBlock, MeshButton3D } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
+import { brand } from "../../helpers/brand";
 
 const createStartMenu = (startButtonCallback, scene) => {
   const cardMat = new StandardMaterial("start-card-mat", scene);

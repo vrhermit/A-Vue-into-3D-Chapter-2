@@ -1,6 +1,6 @@
 import { StandardMaterial, Color3, MeshBuilder, Vector3 } from "@babylonjs/core";
 import { StackPanel3D, TextBlock, AdvancedDynamicTexture, MeshButton3D } from "@babylonjs/gui";
-import { brand } from "@/helpers/brand";
+import { brand } from "../../helpers/brand";
 
 const createControlPanelButton = (label, callbackAction, scene) => {
   const cardMat = new StandardMaterial("control-card-mat", scene);
