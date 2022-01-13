@@ -20,10 +20,12 @@ export default {
       errored: false,
       page: 1,
       perPage: 12,
+      dataSource: "api",
+      favorites: [],
     };
   },
   methods: {
-    loadData() {
+    loadAPIData() {
       this.loading = true;
       this.itemResponse = null;
       return LibraryService.getItems(this.perPage, this.page)
@@ -36,22 +38,49 @@ export default {
         })
         .finally(() => {
           this.loading = false;
-          this.populate();
+          this.populateWithAPI();
         });
     },
-    loadPrevious() {
+    loadFavData() {
+      this.loading = true;
+      const storage = { ...localStorage };
+      const keys = Object.keys(storage);
+      let loadedFavorites = [];
+      for (let key of keys) {
+        if (key.toString().substring(0, 5) === "item-") {
+          const item = JSON.parse(localStorage[key]);
+          if (item.isFavorite) {
+            loadedFavorites.push(item);
+          }
+        }
+      }
+      const start = this.perPage * this.page - 12;
+      const end = this.perPage * this.page;
+      this.favorites = loadedFavorites.slice(start, end);
+      this.populateWithFAV();
+      this.loading = false;
+    },
+    pageAPIData() {
       if (this.page > 1) {
         this.page = this.page - 1;
-        this.loadData();
+        if (this.dataSource === "api") {
+          this.loadAPIData();
+        } else {
+          this.loadFavData();
+        }
       }
     },
-    loadNext() {
+    pageNext() {
       if (this.page < this.itemResponse.headers["x-wp-totalpages"]) {
         this.page = this.page + 1;
-        this.loadData();
+        if (this.dataSource === "api") {
+          this.loadAPIData();
+        } else {
+          this.loadFavData();
+        }
       }
     },
-    populate() {
+    populateWithAPI() {
       const items = this.itemResponse.data?.map((item) => {
         let fav = false;
         if (localStorage[this.storageKey(item.id)]) {
@@ -70,11 +99,24 @@ export default {
       });
       SceneWrapper.populateCompactCards(items, this.toggleFavorite);
     },
-    loadAPI() {
-      console.log("loadAPI");
+    populateWithFAV() {
+      const items = this.favorites;
+      SceneWrapper.populateCompactCards(items, this.toggleFavorite);
     },
-    loadFavorite() {
+
+    useAPI() {
+      this.page = 1;
+      this.dataSource = "api";
+      console.log("loadAPIData");
+      this.loadAPIData();
+      // this.populateWithAPI();
+    },
+    useFavorite() {
+      this.page = 1;
+      this.dataSource = "fav";
+      this.loadFavData();
       console.log("loadFavorite");
+      // this.populateWithFAV()();
     },
     toggleFavorite(item, isFavorite) {
       let newItem = item;
@@ -88,15 +130,15 @@ export default {
   },
   computed: {},
   created() {
-    this.loadData();
+    this.loadAPIData();
   },
   async mounted() {
     await SceneWrapper.createScene(document.getElementById("bjsCanvas"));
-    SceneWrapper.sendControlPanelButton("<", this.loadPrevious);
-    SceneWrapper.sendControlPanelButton(">", this.loadNext);
+    SceneWrapper.sendControlPanelButton("<", this.pageAPIData);
+    SceneWrapper.sendControlPanelButton(">", this.pageNext);
     SceneWrapper.sendControlPanelButton("", () => {});
-    SceneWrapper.sendControlPanelButton("API", this.loadAPI);
-    SceneWrapper.sendControlPanelButton("FAV", this.loadFavorite);
+    SceneWrapper.sendControlPanelButton("API", this.useAPI);
+    SceneWrapper.sendControlPanelButton("FAV", this.useFavorite);
   },
 };
 </script>
