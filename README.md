@@ -1,6 +1,6 @@
 # a-vue-into-3d-starter-vue3
 
-About: This is the project that I built while writing Chapter 2 of a [A Vue into 3D](https://radicalappdev.com/2021/11/24/chapter-1-0-a-frame-setup/).
+About: This is the project that I built while writing Chapter 2 of a [A Vue into 3D](https://radicalappdev.com/2021/11/23/a-vue-into-3d-introduction/).
 
 ## Local network SSL certs
 
