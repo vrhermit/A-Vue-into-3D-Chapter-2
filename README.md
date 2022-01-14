@@ -1,5 +1,7 @@
 # a-vue-into-3d-starter-vue3
 
+About: This is the project that I built while writing Chapter 2 of a [A Vue into 3D](https://radicalappdev.com/2021/11/24/chapter-1-0-a-frame-setup/).
+
 ## Local network SSL certs
 
 Used for testing the WebXR scene on an Oculus Quest while connected to the dev server over the local network.
