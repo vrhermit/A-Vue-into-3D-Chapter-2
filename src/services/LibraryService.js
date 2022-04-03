@@ -20,7 +20,7 @@ export default {
       // params.append("_fields", fields);
       return params;
     };
-    return apiClient.get("/library?", {
+    return apiClient.get("/posts?", {
       params: axiosParams()
     });
   },
